@@ -2,10 +2,20 @@
 //
 
 #include <iostream>
-
+#include "Book_Practice.h"
 int main()
 {
     std::cout << "Hello World!\n";
+    /*
+    #pragma once 역활 : 같은 이름의 헤더파일은 한번만 가져오기
+    #define Book_Practice : Book_Practice를 정의합니다.
+    define함수이후 따로 쓰는게 없는데 뭘 정의하는 걸까?
+    해답 : 아무것도 정의하지 않고, 단지 해당 이름의 변수가 필요하다.
+    컴파일러는 같은 이름의 헤더를 2번 이상 include할 수 없다.
+    해당 이름의 변수를 만들어 이후의 다른 변수가 해당 변수가 이미 존재한다면 확인할 수 있도록 만든다.
+    */
+    Practice_Main();
+    
 }
 
 // 프로그램 실행: <Ctrl+F5> 또는 [디버그] > [디버깅하지 않고 시작] 메뉴
