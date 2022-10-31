@@ -19,6 +19,12 @@
     <Filter Include="소스 파일\test2">
       <UniqueIdentifier>{0f9cc06d-73da-4404-8885-18167e716900}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\test3">
+      <UniqueIdentifier>{f51a1904-4eaf-4f89-991a-bc5c58faabf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\test3">
+      <UniqueIdentifier>{7c8f5fac-267e-41e4-b16a-e049b97fa470}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LAB1.cpp">
@@ -32,6 +38,9 @@
     </ClCompile>
     <ClCompile Include="test2\test2_2.cpp">
       <Filter>소스 파일\test2</Filter>
+    </ClCompile>
+    <ClCompile Include="test3\MultipleInheritance.cpp">
+      <Filter>소스 파일\test3</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -47,9 +56,12 @@
     <ClInclude Include="test2\test2_3.h">
       <Filter>헤더 파일\test2</Filter>
     </ClInclude>
+    <ClInclude Include="test3\MultipleInheritance.h">
+      <Filter>헤더 파일\test3</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="note.txt">
+    <Text Include="Resource\note.txt">
       <Filter>리소스 파일</Filter>
     </Text>
   </ItemGroup>
