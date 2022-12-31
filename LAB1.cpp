@@ -2,7 +2,7 @@
 //
 
 #include <iostream>
-#include "Book_Practice.h"
+#include "Book_Practice/Book_Practice.h"
 
 #include "test2/test2_2.h"
 #include "test2/test2_1.h"
@@ -13,14 +13,16 @@ int main()
     /*
     책 연습
     */
-    //test1 t1;
-    //t1.Practice_Main();
-    //int a = 5;
-    //int* b = &a;
-    //int* c = b;
-    //cout << *(&a);
-    //(&t1)->Practice_Main();
-    //(*(&t1)).Practice_Main();
+    
+    test1 t1;
+    t1.Practice_Main();
+    int a = 5;
+    int* b = &a;
+    int* c = b;
+    cout << *(&a);
+    (&t1)->Practice_Main();
+    (*(&t1)).Practice_Main();
+    
     /*
     test2
     include test

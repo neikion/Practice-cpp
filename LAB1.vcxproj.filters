@@ -25,12 +25,15 @@
     <Filter Include="헤더 파일\test3">
       <UniqueIdentifier>{7c8f5fac-267e-41e4-b16a-e049b97fa470}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Practice">
+      <UniqueIdentifier>{ecfaf36b-ecba-467c-b990-7f6c9bfb6a3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Practice">
+      <UniqueIdentifier>{c914153f-6d0c-4f26-b017-d75d1f60ee2c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LAB1.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Book_Practice.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="test2\test2_1.cpp">
@@ -42,11 +45,11 @@
     <ClCompile Include="test3\MultipleInheritance.cpp">
       <Filter>소스 파일\test3</Filter>
     </ClCompile>
+    <ClCompile Include="Book_Practice\Book_Practice.cpp">
+      <Filter>소스 파일\Practice</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Book_Practice.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="test2\test2_1.h">
       <Filter>헤더 파일\test2</Filter>
     </ClInclude>
@@ -58,6 +61,9 @@
     </ClInclude>
     <ClInclude Include="test3\MultipleInheritance.h">
       <Filter>헤더 파일\test3</Filter>
+    </ClInclude>
+    <ClInclude Include="Book_Practice\Book_Practice.h">
+      <Filter>헤더 파일\Practice</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

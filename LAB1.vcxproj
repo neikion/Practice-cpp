@@ -139,14 +139,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Book_Practice.cpp" />
+    <ClCompile Include="Book_Practice\Book_Practice.cpp" />
     <ClCompile Include="LAB1.cpp" />
     <ClCompile Include="test2\test2_1.cpp" />
     <ClCompile Include="test2\test2_2.cpp" />
     <ClCompile Include="test3\MultipleInheritance.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Book_Practice.h" />
+    <ClInclude Include="Book_Practice\Book_Practice.h" />
     <ClInclude Include="test2\test2_1.h" />
     <ClInclude Include="test2\test2_2.h" />
     <ClInclude Include="test2\test2_3.h" />
