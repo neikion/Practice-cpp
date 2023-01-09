@@ -45,7 +45,10 @@
     <ClCompile Include="test3\MultipleInheritance.cpp">
       <Filter>소스 파일\test3</Filter>
     </ClCompile>
-    <ClCompile Include="Book_Practice\Book_Practice.cpp">
+    <ClCompile Include="Book_Practice\Generic_Practice.cpp">
+      <Filter>소스 파일\Practice</Filter>
+    </ClCompile>
+    <ClCompile Include="Book_Practice\Book_Practice1.cpp">
       <Filter>소스 파일\Practice</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,7 +65,10 @@
     <ClInclude Include="test3\MultipleInheritance.h">
       <Filter>헤더 파일\test3</Filter>
     </ClInclude>
-    <ClInclude Include="Book_Practice\Book_Practice.h">
+    <ClInclude Include="Book_Practice\Book_Practice1.h">
+      <Filter>헤더 파일\Practice</Filter>
+    </ClInclude>
+    <ClInclude Include="Book_Practice\Book_Practice_All.h">
       <Filter>헤더 파일\Practice</Filter>
     </ClInclude>
   </ItemGroup>

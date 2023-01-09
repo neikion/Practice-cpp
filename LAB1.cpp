@@ -2,11 +2,13 @@
 //
 
 #include <iostream>
-#include "Book_Practice/Book_Practice.h"
+#include "Book_Practice/Book_Practice1.h"
 
 #include "test2/test2_2.h"
 #include "test2/test2_1.h"
 #include "test3/MultipleInheritance.h"
+
+#include "Book_Practice/Book_Practice_All.h"
 int main()
 {
     std::cout << "Hello World!\n";
@@ -14,30 +16,37 @@ int main()
     책 연습
     */
     
-    test1 t1;
+    /*test1 t1;
     t1.Practice_Main();
     int a = 5;
     int* b = &a;
     int* c = b;
     cout << *(&a);
     (&t1)->Practice_Main();
-    (*(&t1)).Practice_Main();
+    (*(&t1)).Practice_Main();*/
     
     /*
     test2
     include test
     포함
     */
-    
     //testmethod1();
     //testmethod2();
-
+    
     /*
     test3
     MultipleInheritance
     다중 상속
     */
-    MultipleInheritanceMain();
+    //MultipleInheritanceMain();
+
+    /*test4
+    제네릭
+    */
+    GenericMain();
+    /*
+    */
+    return 0;
 }
 
 // 프로그램 실행: <Ctrl+F5> 또는 [디버그] > [디버깅하지 않고 시작] 메뉴

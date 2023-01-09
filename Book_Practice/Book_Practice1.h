@@ -1,6 +1,6 @@
 #pragma once
-#ifndef Book_Practice_h
-#define Book_Practice_h
+#ifndef Book_Practice1_h
+#define Book_Practice1_h
 #include <iostream>
 using namespace std;
 class test1 {
