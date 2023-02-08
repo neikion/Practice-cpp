@@ -135,8 +135,48 @@ T classtemplate1<T>::test1() const {
 	return var1;
 }
 
+template<typename T>
+ClassTemplateStack<T>::ClassTemplateStack(int inputlimit)
+:limit(inputlimit),size(0){
+	ptr = new T[limit];
+}
+
+template<typename T>
+ClassTemplateStack<T>::~ClassTemplateStack() {
+	delete[] ptr;
+}
+
+template<typename T>
+void ClassTemplateStack<T>::push(const T& element) {
+	if (size < limit) {
+		ptr[size] = element;
+		size++;
+	}
+	else {
+		throw exception();
+	}
+}
+
+template<typename T>
+T ClassTemplateStack<T>::pop() {
+	if (size > 0) {
+		--size;
+		return ptr[size];
+	}
+	else {
+		throw exception("it is test exception");
+	}
+}
+
 
 void GenericMain() {
-	classtemplate1<int> test1(5);
-	test1.test1();
+	ClassTemplateStack<int> test(5);
+	test.push(1);
+	test.push(2);
+	cout << test.pop() << "\n";
+	test.push(3);
+	test.push(4);
+	cout << test.pop() << "\n";
+	cout << test.pop() << "\n";
+	cout << test.pop() << "\n";
 }

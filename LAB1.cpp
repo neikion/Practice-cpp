@@ -43,9 +43,7 @@ int main()
     /*test4
     제네릭
     */
-    classtemplate1<int> ct(9);
-    cout << ct.test1(1);
-    //GenericMain();
+    GenericMain();
     
     return 0;
 }
