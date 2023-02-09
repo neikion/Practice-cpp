@@ -68,7 +68,7 @@
     <ClInclude Include="Book_Practice\Book_Practice1.h">
       <Filter>헤더 파일\Practice</Filter>
     </ClInclude>
-    <ClInclude Include="Book_Practice\Book_Practice_All.h">
+    <ClInclude Include="Book_Practice\Generic_Practice.h">
       <Filter>헤더 파일\Practice</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef Book_Practice_All_h
-#define Book_Practice_All_h
+#ifndef Generic_Practice_h
+#define Generic_Practice_h
 #include <iostream>
 void GenericMain();
 

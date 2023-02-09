@@ -9,7 +9,7 @@ using namespace std;
 #include "test2/test2_1.h"
 #include "test3/MultipleInheritance.h"
 
-#include "Book_Practice/Book_Practice_All.h"
+#include "Book_Practice/Generic_Practice.h"
 int main()
 {
     /*

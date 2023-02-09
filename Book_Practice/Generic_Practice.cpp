@@ -1,6 +1,6 @@
 using namespace std;
 #include <iostream>
-#include "Book_Practice_All.h"
+#include "Generic_Practice.h"
 
 template<typename T>
 void Sum(T var1, T var2) {
