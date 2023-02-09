@@ -43,7 +43,7 @@ int main()
     /*test4
     제네릭
     */
-    GenericMain();
+    GenericPractice::Main();
     
     return 0;
 }

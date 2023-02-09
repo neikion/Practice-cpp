@@ -1,7 +1,7 @@
 using namespace std;
 #include <iostream>
 #include "Generic_Practice.h"
-
+using namespace GenericPractice;
 template<typename T>
 void Sum(T var1, T var2) {
 	cout << var1+var2;
@@ -168,8 +168,10 @@ T ClassTemplateStack<T>::pop() {
 	}
 }
 
-
-void GenericMain() {
+//함수 구현은 파일 맨 위에 지시문을 배치하더라도 정규화된 이름을 사용해야함 (출처 : https://learn.microsoft.com/en-us/cpp/cpp/namespaces-cpp?view=msvc-170)
+//클래스의 경우 using으로 namespace를 자동으로 붙여주지만, 함수는 명시해줘야함.
+//만약 using을 한 네임 스페이스에 있는 클래스를 다시 선언한다면 C2011오류를 내면서 클래스가 이미 정의되어 있다고 알려준다.
+void GenericPractice::Main() {
 	ClassTemplateStack<int> test(5);
 	test.push(1);
 	test.push(2);
