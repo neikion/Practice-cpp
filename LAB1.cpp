@@ -10,6 +10,7 @@ using namespace std;
 #include "test3/MultipleInheritance.h"
 
 #include "Book_Practice/Generic_Practice.h"
+#include "Book_Practice/Virtual_Practice.h"
 int main()
 {
     /*
@@ -40,10 +41,15 @@ int main()
     */
     //MultipleInheritanceMain();
 
-    /*test4
+    /* test4
     제네릭
     */
-    GenericPractice::Main();
+    //GenericPractice::Main();
     
+    /* test 5
+    다형성
+    */
+    VirtualPractice::Main();
+
     return 0;
 }
