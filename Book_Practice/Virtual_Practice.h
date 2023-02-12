@@ -28,6 +28,23 @@ namespace VirtualPractice {
 	public:
 		void show();
 	};
+
+	class DestructorBaseClass {
+	public:
+		~DestructorBaseClass();
+	};
+	class DestructorAdvancedClass :public DestructorBaseClass{
+	public:
+		~DestructorAdvancedClass();
+	};
+	class VirtualDestructorBaseClass {
+	public:
+		virtual ~VirtualDestructorBaseClass();
+	};
+	class VirtualDestructorAdvancedClass : public VirtualDestructorBaseClass{
+	public:
+		~VirtualDestructorAdvancedClass();
+	};
 }
 #else
 #error header aleary include
