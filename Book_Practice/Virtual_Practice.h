@@ -45,6 +45,46 @@ namespace VirtualPractice {
 	public:
 		~VirtualDestructorAdvancedClass();
 	};
+	class VirtualInhertop {
+	public:
+		int value;
+		VirtualInhertop(int input);
+		void print();
+	};
+	class VirtualInhermiddle1 : virtual public VirtualInhertop {
+	public:
+		int value2;
+		VirtualInhermiddle1(int input);
+		void print();
+	};
+	class VirtualInhermiddle2 :virtual public VirtualInhertop{
+	public:
+		int value3;
+		VirtualInhermiddle2(int input);
+		void print();
+	};
+	
+	class VirtualInherAll : public VirtualInhermiddle1,public VirtualInhermiddle2 {
+	public:
+		VirtualInherAll(int input);
+		void print();
+	};
+
+	class DSCBase {
+	public:
+		virtual void t1() = 0;
+		virtual void t2() = 0;
+	};
+	class DSCSub1 : public virtual DSCBase {
+	public:
+		virtual void t1();
+	};
+	class DSCSub2 : public virtual DSCBase {
+	public:
+		virtual void t2();
+	};
+	class DSCAll : public DSCSub1, public DSCSub2 {
+	};
 }
 #else
 #error header aleary include
