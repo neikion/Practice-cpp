@@ -85,6 +85,40 @@ namespace VirtualPractice {
 	};
 	class DSCAll : public DSCSub1, public DSCSub2 {
 	};
+
+	class Mixsub1 {
+	protected:
+		//0으로 초기화해준다.
+		int subvalue{};
+	public:
+		virtual void print() = 0;
+	};
+
+
+	class Mixsub2 {
+	protected:
+		//0으로 초기화해준다.
+		int subvalue{};
+	public:
+		virtual void print() = 0;
+	};
+
+
+	class Mixmain {
+	public:
+		Mixmain(int value);
+		virtual void print();
+	protected:
+		int mainvalue;
+
+	};
+
+
+	class Mixall :public Mixmain, public Mixsub1, public Mixsub2 {
+	public:
+		virtual void print() override;
+		Mixall(int main, int sub1, int sub2);
+	};
 }
 #else
 #error header aleary include

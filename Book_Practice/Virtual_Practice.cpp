@@ -194,6 +194,42 @@ void DelegateSisterClass() {
 
 	delete pa;
 }
-void VirtualPractice::Main() {
-	DelegateSisterClass();
+
+VirtualPractice::Mixmain::Mixmain(int value1)
+	:mainvalue(value1)
+{
 }
+
+void VirtualPractice::Mixmain::print() {
+	cout << "main " << mainvalue << "\n";
+}
+void Mixall::print()
+{
+	cout << "all\nmain value : " <<mainvalue << "\nsub1 value : "
+		<< Mixsub1::subvalue <<"\nsub2 value : " << Mixsub2::subvalue << "\n";
+}
+
+Mixall::Mixall(int inmain, int insub1, int insub2)
+	: Mixmain(inmain){
+	//Mixsub에 생성자가 없어 여기서 할당
+	//부모에 생성자가 없으면 부모 변수는 초기화 리스트에서 초기화가 안된다.
+	Mixsub1::subvalue = insub1;
+	Mixsub2::subvalue = insub2;
+}
+
+//MixinClass
+//순수 가상 함수를 가져서 인스턴스화할 수 없지만, 자른 클래스에 데이터 멤버를 추가해주는 클래스
+void MixinMain() {
+	Mixall mc(0, 1, 2);
+	Mixall* mc1 = new Mixall(0, 1, 2);
+	mc1->print();
+	dynamic_cast<Mixsub1*>(mc1)->print();
+	dynamic_cast<Mixsub2*>(mc1)->print();
+	dynamic_cast<Mixmain*>(mc1)->print();
+	delete mc1;
+}
+void VirtualPractice::Main() {
+	MixinMain();
+}
+
+
