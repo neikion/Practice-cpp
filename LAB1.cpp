@@ -11,28 +11,21 @@ using namespace std;
 
 #include "Book_Practice/Generic_Practice.h"
 #include "Book_Practice/Virtual_Practice.h"
+#include "Book_Practice/Return_Practice.h"
 int main()
 {
-    /*
-    책 연습
+    /*test 1
+    기타 테스트
     */
-    
-    /*test1 t1;
-    t1.Practice_Main();
-    int a = 5;
-    int* b = &a;
-    int* c = b;
-    cout << *(&a);
-    (&t1)->Practice_Main();
-    (*(&t1)).Practice_Main();*/
+    //Book_Practice1::Main();
     
     /*
     test2
     include test
     포함
     */
-    //testmethod1();
-    //testmethod2();
+    /*testmethod1();
+    testmethod2();*/
     
     /*
     test3
@@ -49,7 +42,12 @@ int main()
     /* test 5
     다형성
     */
-    VirtualPractice::Main();
+    //VirtualPractice::Main();
+
+    /* test 6
+    리턴 종류
+    */
+    ReturnPractice::Main();
 
     return 0;
 }

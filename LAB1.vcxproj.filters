@@ -54,6 +54,9 @@
     <ClCompile Include="Book_Practice\Virtual_Practice.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Book_Practice\Return_Practice.cpp">
+      <Filter>소스 파일\Practice</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="test2\test2_1.h">
@@ -75,7 +78,10 @@
       <Filter>헤더 파일\Practice</Filter>
     </ClInclude>
     <ClInclude Include="Book_Practice\Virtual_Practice.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Practice</Filter>
+    </ClInclude>
+    <ClInclude Include="Book_Practice\Return_Practice.h">
+      <Filter>헤더 파일\Practice</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
