@@ -12,6 +12,7 @@ using namespace std;
 #include "Book_Practice/Generic_Practice.h"
 #include "Book_Practice/Virtual_Practice.h"
 #include "Book_Practice/Return_Practice.h"
+#include "Book_Practice/OperatorOverload.h"
 int main()
 {
     /*test 1
@@ -47,7 +48,11 @@ int main()
     /* test 6
     리턴 종류
     */
-    ReturnPractice::Main();
+    //ReturnPractice::Main();
 
+    /* test 7
+    연산자 오버로딩
+    */
+    OperatorOverload::Main();
     return 0;
 }

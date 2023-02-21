@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="Book_Practice\Book_Practice1.cpp" />
     <ClCompile Include="Book_Practice\Generic_Practice.cpp" />
+    <ClCompile Include="Book_Practice\OperatorOverload.cpp" />
     <ClCompile Include="Book_Practice\Return_Practice.cpp" />
     <ClCompile Include="Book_Practice\Virtual_Practice.cpp" />
     <ClCompile Include="LAB1.cpp" />
@@ -151,6 +152,7 @@
   <ItemGroup>
     <ClInclude Include="Book_Practice\Book_Practice1.h" />
     <ClInclude Include="Book_Practice\Generic_Practice.h" />
+    <ClInclude Include="Book_Practice\OperatorOverload.h" />
     <ClInclude Include="Book_Practice\Return_Practice.h" />
     <ClInclude Include="Book_Practice\Virtual_Practice.h" />
     <ClInclude Include="test2\test2_1.h" />
