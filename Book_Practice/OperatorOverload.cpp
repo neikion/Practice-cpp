@@ -44,6 +44,115 @@ void Operator_Overload_Return_Copy_Constructor_Main(){
 	cout << origin.value;
 }
 
-void OperatorOverload::Main() {
-	Operator_Overload_Return_Copy_Constructor_Main();
+
+
+CustomType& CustomType::operator=(const CustomType& ctRight) {
+	if (this != &ctRight) {
+		value = ctRight.value;
+		cout << "서로 다른 객체\n";
+	}
+	else {
+		cout << "같은 객체\n";
+	}
+	return *this;
 }
+
+void OperatorEqulMain() {
+	CustomType c(1),c2(2);
+	c = c2;
+	cout << c.value<<"\n";
+	c = c;
+	cout << c.value<<"\n";
+}
+
+CustomType::~CustomType() {
+	cout << "CustomType Destroy\n";
+}
+
+CustomTypeSmartPtr::CustomTypeSmartPtr(CustomType* ct){
+	ptr = ct;
+}
+
+CustomTypeSmartPtr::~CustomTypeSmartPtr() {
+	delete ptr;
+}
+
+CustomType& CustomTypeSmartPtr::operator*() const {
+	return *ptr;
+}
+
+CustomType* CustomTypeSmartPtr::operator->() const {
+	return ptr;
+}
+
+void CustomTypeSmartPtrMain() {
+	CustomType* ct(new CustomType(1));
+	CustomTypeSmartPtr sp=new CustomType(0);
+	cout << sp->value<<"\n";
+	cout << (*sp).value << "\n";
+	//아레의 경우에는 소멸자가 호출되지 않으니 대입 연산자를 오버라이딩해서 전 객체를 소멸시켜줘야함
+	//ct = new CustomType(2);
+
+}
+
+CustomArray::CustomArray(int insize)
+	:size(insize){
+	ptr = new int[size];
+}
+
+CustomArray::~CustomArray() {
+	delete ptr;
+}
+
+int& CustomArray::operator[](int index) {
+	if (size < 0 || size<=index) {
+		throw exception();
+	}
+	return ptr[index];
+}
+
+int& CustomArray::operator[](int index)const {
+	if (size < 0 || size <= index) {
+		throw exception();
+	}
+	return ptr[index];
+}
+
+void CustomArrayMain() {
+	CustomArray a (5);
+	a[0] = 1;
+	cout << a[0]<<"\n";
+
+}
+
+CustomFunctor::CustomFunctor() {
+	current = numeric_limits<int>::max();
+}
+CustomFunctor::CustomFunctor(int value)
+:current(value){
+}
+
+int CustomFunctor::operator()(int value) {
+	if (value < current) {
+		current = value;
+	}
+	return current;
+}
+
+void CustomFunctorMain() {
+	// CustomFunctor cf()
+	// 위 코드는 기본 생성자를 호출하는 CustomFunctor를 생성하는 코드인지
+	// CustomFunctor를 반환하는  cf()함수를 호출하는 것인지 컴파일러는 햇갈려한다.
+	// 그래서 함수의 프로토 타입이 없다고 경고문구를 띄우기도 한다.
+	// 클래스 생성은 괄호를 지울것.
+
+	CustomFunctor cf;
+	cout << "가장 작은 값" << cf(5) << "\n";
+	cout << "가장 작은 값" << cf(6) << "\n";
+	cout << "가장 작은 값" << cf(3) << "\n";
+}
+
+void OperatorOverload::Main() {
+	CustomFunctorMain();
+}
+

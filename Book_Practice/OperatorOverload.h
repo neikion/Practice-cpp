@@ -14,6 +14,8 @@ namespace OperatorOverload {
 	public:
 		int value;
 		CustomType(int);
+		~CustomType();
+
 		//+CustomType
 		//호스트 객체 변경 없음
 		//새로운 객체 생성
@@ -32,6 +34,46 @@ namespace OperatorOverload {
 		//호스트 객체 변경 필요
 		//rvalue로 사용
 		const CustomType operator++(int);
+
+		// CustomType = CustomType
+		// 오른쪽 객체를 변경시키면 안됨
+		// 호스트 객체를 변경시켜야함
+		// 참조로 전달
+		CustomType& operator=(const CustomType& ctRight);
+	};
+
+	class CustomTypeSmartPtr {
+	private:
+		CustomType* ptr;
+	public:
+		CustomTypeSmartPtr(CustomType*);
+		~CustomTypeSmartPtr();
+		CustomType* operator->() const;
+		CustomType& operator*() const;
+	};
+
+	class CustomArray {
+	private:
+		int* ptr;
+		int size;
+	public:
+		CustomArray(int size);
+		~CustomArray();
+		//getter와 setter의 차이는 함수 뒤 const여부로 나뉨
+		//접근자
+		int& operator[](int index)const;
+		//설정자
+		int& operator[](int index);
+	};
+
+	//이 클래스의 생성자에 입력된 값 중 가장 작은 값 출력
+	class CustomFunctor {
+	private:
+		int current;
+	public:
+		CustomFunctor();
+		CustomFunctor(int);
+		int operator()(int);
 	};
 }
 #else
