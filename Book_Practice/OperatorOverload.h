@@ -40,6 +40,27 @@ namespace OperatorOverload {
 		// 호스트 객체를 변경시켜야함
 		// 참조로 전달
 		CustomType& operator=(const CustomType& ctRight);
+
+		
+
+		//CustomType + CustomType
+		//새로운 객체가 함수 내부에서 만들어져서 반환됨.
+		//friend 없이 전역 함수로도 구현 가능.(대신 getter,setter로 변수 접근해야됨)
+		//이 함수가 클래스 안에 있을 경우
+		// 컴파일러는 Customtype2 + 와 CustomType2 + CustomType2를 햇갈려한다.
+		// 이를 방지하기 위해 자기 자신을 리턴하지 않는 이항 연산자(+,-,*,/ 등)은 외부로
+		// 자기 자신을 리턴하는 이항연산자(++, += 등)는 클래스 내부에 선언한다.
+		friend const CustomType operator+(const CustomType& left, const CustomType& right);
+		
+		//이 코드도 위와 같은 결과를 내지만 위 방법을 더 추천함.
+		//const CustomType operator+(const CustomType& right) const;
+
+		/* 위 코드 구현
+		const CustomType CustomType::operator+(const CustomType& right) const {
+			CustomType ct(this->value+right.value);
+			return ct;
+		}
+		*/
 	};
 
 	class CustomTypeSmartPtr {

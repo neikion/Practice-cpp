@@ -44,9 +44,9 @@ void Operator_Overload_Return_Copy_Constructor_Main(){
 	cout << origin.value;
 }
 
-
-
 CustomType& CustomType::operator=(const CustomType& ctRight) {
+	//매개변수의 &는 참조변수
+	//if문의 &는 주소 읽기
 	if (this != &ctRight) {
 		value = ctRight.value;
 		cout << "서로 다른 객체\n";
@@ -152,7 +152,20 @@ void CustomFunctorMain() {
 	cout << "가장 작은 값" << cf(3) << "\n";
 }
 
+
+const CustomType OperatorOverload::operator+(const CustomType& left, const CustomType& right) {
+	CustomType ct(left.value + right.value);
+	return ct;
+}
+
+
+
+void CustomTypeNotMemberOverLoadMain() {
+	CustomType ct1(1), ct2(2);
+	cout <<"ct1(1) + ct2(2) = " << (ct1+ct2).value << "\n";
+}
+
 void OperatorOverload::Main() {
-	CustomFunctorMain();
+	CustomTypeNotMemberOverLoadMain();
 }
 
