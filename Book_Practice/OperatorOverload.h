@@ -1,6 +1,8 @@
 #pragma once
+
 #ifndef Operator_Overload_h
 #define Operator_Overload_h
+#include <iostream>
 namespace OperatorOverload {
 	void Main();
 	//함수 앞 const
@@ -61,8 +63,10 @@ namespace OperatorOverload {
 			return ct;
 		}
 		*/
+		friend bool operator<(const CustomType&, const CustomType&);
+		friend std::ostream& operator<<(std::ostream& os, const CustomType& c);
 	};
-
+	
 	class CustomTypeSmartPtr {
 	private:
 		CustomType* ptr;
@@ -90,11 +94,30 @@ namespace OperatorOverload {
 	//이 클래스의 생성자에 입력된 값 중 가장 작은 값 출력
 	class CustomFunctor {
 	private:
-		int current;
+		int current=0;
 	public:
 		CustomFunctor();
 		CustomFunctor(int);
 		int operator()(int);
+	};
+
+	class AutoChangeCustomType {	
+	public:
+		int value;
+		AutoChangeCustomType() = default;
+		//아레 생성자(변환 생성자)를 통해 컴파일러에서 기본 자료형(int)을 클래스 자료형으로 자동 변환
+		AutoChangeCustomType(int);
+		friend const AutoChangeCustomType operator+(const AutoChangeCustomType&, const AutoChangeCustomType&);
+	};
+	class NotAutoChangeCustomType {
+	public:
+		int value;
+		NotAutoChangeCustomType() = default;
+		//명시적으로 변환(캐스팅)할때만 변환 가능.
+		//컴파일러에서 자동으로 바꾸지 않음.
+		explicit NotAutoChangeCustomType(int);
+		//클래스를 double로 변환 가능하게 만듦. explicit없이 사용 가능.
+		explicit operator double();
 	};
 }
 #else

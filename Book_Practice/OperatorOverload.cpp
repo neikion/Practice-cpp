@@ -4,7 +4,7 @@ using namespace OperatorOverload;
 using namespace std;
 
 CustomType::CustomType(int invalue)
-:value(invalue){
+	:value(invalue) {
 
 }
 
@@ -33,7 +33,7 @@ const CustomType CustomType::operator++(int dummy) {
 }
 
 //interesting.
-void Operator_Overload_Return_Copy_Constructor_Main(){
+void Operator_Overload_Return_Copy_Constructor_Main() {
 	CustomType origin(1);
 
 	//operator++가 ct를 반환했으니 반환됬던 ct의 내용이 표시됨.
@@ -58,18 +58,18 @@ CustomType& CustomType::operator=(const CustomType& ctRight) {
 }
 
 void OperatorEqulMain() {
-	CustomType c(1),c2(2);
+	CustomType c(1), c2(2);
 	c = c2;
-	cout << c.value<<"\n";
+	cout << c.value << "\n";
 	c = c;
-	cout << c.value<<"\n";
+	cout << c.value << "\n";
 }
 
 CustomType::~CustomType() {
 	cout << "CustomType Destroy\n";
 }
 
-CustomTypeSmartPtr::CustomTypeSmartPtr(CustomType* ct){
+CustomTypeSmartPtr::CustomTypeSmartPtr(CustomType* ct) {
 	ptr = ct;
 }
 
@@ -87,8 +87,8 @@ CustomType* CustomTypeSmartPtr::operator->() const {
 
 void CustomTypeSmartPtrMain() {
 	CustomType* ct(new CustomType(1));
-	CustomTypeSmartPtr sp=new CustomType(0);
-	cout << sp->value<<"\n";
+	CustomTypeSmartPtr sp = new CustomType(0);
+	cout << sp->value << "\n";
 	cout << (*sp).value << "\n";
 	//아레의 경우에는 소멸자가 호출되지 않으니 대입 연산자를 오버라이딩해서 전 객체를 소멸시켜줘야함
 	//ct = new CustomType(2);
@@ -96,7 +96,7 @@ void CustomTypeSmartPtrMain() {
 }
 
 CustomArray::CustomArray(int insize)
-	:size(insize){
+	:size(insize) {
 	ptr = new int[size];
 }
 
@@ -105,7 +105,7 @@ CustomArray::~CustomArray() {
 }
 
 int& CustomArray::operator[](int index) {
-	if (size < 0 || size<=index) {
+	if (size < 0 || size <= index) {
 		throw exception();
 	}
 	return ptr[index];
@@ -119,9 +119,9 @@ int& CustomArray::operator[](int index)const {
 }
 
 void CustomArrayMain() {
-	CustomArray a (5);
+	CustomArray a(5);
 	a[0] = 1;
-	cout << a[0]<<"\n";
+	cout << a[0] << "\n";
 
 }
 
@@ -129,7 +129,7 @@ CustomFunctor::CustomFunctor() {
 	current = numeric_limits<int>::max();
 }
 CustomFunctor::CustomFunctor(int value)
-:current(value){
+	:current(value) {
 }
 
 int CustomFunctor::operator()(int value) {
@@ -162,10 +162,76 @@ const CustomType OperatorOverload::operator+(const CustomType& left, const Custo
 
 void CustomTypeNotMemberOverLoadMain() {
 	CustomType ct1(1), ct2(2);
-	cout <<"ct1(1) + ct2(2) = " << (ct1+ct2).value << "\n";
+	cout << "ct1(1) + ct2(2) = " << (ct1 + ct2).value << "\n";
+}
+
+// 포인터 왼쪽에 const는 해당 주소에 값 변경 불가.
+// 포인터 오른쪽 const는 주소 변경 불가.
+// 함수의 리턴타입이 클래스 유형이 아닐 경우 const는 아무 효과가 없다.
+// 값을 복사해서 넘겨주기 때문
+bool OperatorOverload::operator<(const CustomType& left, const CustomType& right) {
+	return left.value < right.value;
+}
+
+//아레의 방법도 가능하며 좀 더 일반적인 방법
+// VisaulStudio 2019 16.11.24에서는 컴파일러 버그로 오류가 남.
+//namespace OperatorOverload {
+//	
+//	
+//	ostream& operator<<(ostream& os, const CustomType& c) {
+//		os << c.value;
+//		return os;
+//	}
+//}
+
+ostream& OperatorOverload::operator<<(ostream& os, const CustomType& c) {
+	os << c.value;
+	return os;
+}
+
+void CustomTypeNotMemberOverLoadMain2() {
+	CustomType ct1(1), ct2(2);
+	std::cout << "ct1(1) < ct2(2) = " << (ct1 < ct2) << "\n";
+	std::cout << ct1 << "\n";
+}
+
+
+
+
+AutoChangeCustomType::AutoChangeCustomType(int invalue)
+	:value(invalue) {
+	cout << "int"<<"\n";
+}
+
+const AutoChangeCustomType OperatorOverload::operator+(const AutoChangeCustomType& left, const AutoChangeCustomType& right) {
+	AutoChangeCustomType cf(left.value + right.value);
+	return cf;
+}
+
+void AutoChangeCustomTypeMain() {
+	AutoChangeCustomType cf1(0), cf2;
+	cf2 = cf1 + 2;
+	cout << cf2.value<<"\n";
+}
+
+NotAutoChangeCustomType::NotAutoChangeCustomType(int invalue)
+	:value(invalue) {
+
+}
+
+NotAutoChangeCustomType::operator double() {
+	return (double)value;
+}
+
+
+void NotAutoChangeCustomTypeMain() {
+	NotAutoChangeCustomType cf1 = (NotAutoChangeCustomType)2;
+	cout << cf1.value<<"\n";
+	//cf1의 value가 double로 변환됨.
+	cout << (double)cf1+1.2;
 }
 
 void OperatorOverload::Main() {
-	CustomTypeNotMemberOverLoadMain();
+	NotAutoChangeCustomTypeMain();
 }
 
