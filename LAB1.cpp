@@ -13,6 +13,7 @@ using namespace std;
 #include "Book_Practice/Virtual_Practice.h"
 #include "Book_Practice/Return_Practice.h"
 #include "Book_Practice/OperatorOverload.h"
+#include "Book_Practice/ExceptionPractice.h"
 int main()
 {
     /*test 1
@@ -53,6 +54,11 @@ int main()
     /* test 7
     연산자 오버로딩
     */
-    OperatorOverload::Main();
+    //OperatorOverload::Main();
+
+    /* test 8
+    예외 처리
+    */
+    ExceptionPractice::Main();
     return 0;
 }

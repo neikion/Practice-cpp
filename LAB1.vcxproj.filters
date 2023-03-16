@@ -60,6 +60,9 @@
     <ClCompile Include="Book_Practice\Virtual_Practice.cpp">
       <Filter>소스 파일\Practice</Filter>
     </ClCompile>
+    <ClCompile Include="Book_Practice\ExceptionPractice.cpp">
+      <Filter>소스 파일\Practice</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="test2\test2_1.h">
@@ -89,12 +92,18 @@
     <ClInclude Include="Book_Practice\OperatorOverload.h">
       <Filter>헤더 파일\Practice</Filter>
     </ClInclude>
+    <ClInclude Include="Book_Practice\ExceptionPractice.h">
+      <Filter>헤더 파일\Practice</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resource\note.txt">
       <Filter>리소스 파일</Filter>
     </Text>
     <Text Include="Resource\why minimize use of new.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="Resource\constructor exception.txt">
       <Filter>리소스 파일</Filter>
     </Text>
   </ItemGroup>

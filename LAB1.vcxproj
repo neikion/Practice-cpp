@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Book_Practice\Book_Practice1.cpp" />
+    <ClCompile Include="Book_Practice\ExceptionPractice.cpp" />
     <ClCompile Include="Book_Practice\Generic_Practice.cpp" />
     <ClCompile Include="Book_Practice\OperatorOverload.cpp" />
     <ClCompile Include="Book_Practice\Return_Practice.cpp" />
@@ -151,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Book_Practice\Book_Practice1.h" />
+    <ClInclude Include="Book_Practice\ExceptionPractice.h" />
     <ClInclude Include="Book_Practice\Generic_Practice.h" />
     <ClInclude Include="Book_Practice\OperatorOverload.h" />
     <ClInclude Include="Book_Practice\Return_Practice.h" />
@@ -161,6 +163,7 @@
     <ClInclude Include="test3\MultipleInheritance.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Resource\constructor exception.txt" />
     <Text Include="Resource\why minimize use of new.txt" />
     <Text Include="Resource\note.txt" />
   </ItemGroup>
