@@ -119,6 +119,22 @@ namespace OperatorOverload {
 		//클래스를 double로 변환 가능하게 만듦. explicit없이 사용 가능.
 		explicit operator double();
 	};
+	template<typename T>
+	class CustomSmartPointer {
+	public:
+		T* ptr;
+		CustomSmartPointer(T*);
+		~CustomSmartPointer();
+		T& operator*();
+		T* operator->();
+	};
+	class InnerClass {
+	public:
+		int value;
+		void print();
+		InnerClass* operator->();
+		InnerClass& operator*();
+	};
 }
 #else
 #error header aleary include

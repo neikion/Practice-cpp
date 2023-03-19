@@ -140,11 +140,14 @@ int CustomFunctor::operator()(int value) {
 }
 
 void CustomFunctorMain() {
+	// 가장 성가신 구문 해석(Most vexing parse)
+	// c++은 선언으로 해석할 수 있는 것은 항상 선언으로 해석한다.
 	// CustomFunctor cf()
 	// 위 코드는 기본 생성자를 호출하는 CustomFunctor를 생성하는 코드인지
 	// CustomFunctor를 반환하는  cf()함수를 호출하는 것인지 컴파일러는 햇갈려한다.
 	// 그래서 함수의 프로토 타입이 없다고 경고문구를 띄우기도 한다.
 	// 클래스 생성은 괄호를 지울것.
+	// 또는 중괄호 초기화를 사용하여 피할 수 있다.
 
 	CustomFunctor cf;
 	cout << "가장 작은 값" << cf(5) << "\n";
@@ -230,8 +233,64 @@ void NotAutoChangeCustomTypeMain() {
 	//cf1의 value가 double로 변환됨.
 	cout << (double)cf1+1.2;
 }
+template<typename T>
+CustomSmartPointer<T>::CustomSmartPointer(T* inptr)
+	:ptr(inptr) {
 
+}
+template<typename T>
+CustomSmartPointer<T>::~CustomSmartPointer() {
+	delete ptr;
+}
+template<typename T>
+T& CustomSmartPointer<T>::operator*() {
+	return *ptr;
+}
+template<typename T>
+T* CustomSmartPointer<T>::operator->() {
+	return ptr;
+}
+InnerClass& InnerClass::operator*() {
+	cout << "* 사용" << endl;
+	return *this;
+}
+InnerClass* InnerClass::operator->() {
+	cout << "-> 사용" << endl;
+	return this;
+}
+void InnerClass::print() {
+	cout << value << endl;
+}
+void SmartPointer2Main() {
+	InnerClass* t1 = new InnerClass;
+	CustomSmartPointer<InnerClass> sp(t1);
+	(*t1).value = 10;
+
+	// InnerClass의 ->와 * 연산자를 오버로딩 했는데 왜 연산자가 표시 안될까
+	sp->print();
+
+	// sp->은 *t1으로 치환되니 *t1 print 아닌가?
+	// 연산자가 없으니 sp->-> 이런 식이 되어야 하지 않을까?
+
+	// 출처 : https://www.tutorialspoint.com/cplusplus/class_member_access_operator_overloading.htm
+	// sp->print(); 는 sp.operator->()->print(); 이렇게 치환된다.
+	// sp객체에 operator->() 함수를 실행하여 받아온것을 -> 연산자를 통해 print()함수로 출력한다.
+	// 또한 아레와 의미가 같다.
+	(*(sp.operator->())).print();
+	// sp.operator->()는 리턴값은 t1에 대한 포인터이므로 이는 결국와 같고
+	(*(t1)).print();
+	// 필요없는 괄호를 정리하면 이렇게 된다.
+	(*t1).print();
+	// t1앞에 *이 붙어서 왜 *연산자가 적용 안되는가 싶을텐데 이는 
+	// t1이 InnerClass를 힙에 할당하며 주소값을 받아온 포인터이기 때문에
+	// 객체.print()와 다를 것이 없다.
+	// 즉 이게 만약 스택에 할당되었다면 아레와 같은 의미가 된다.
+	// t1.print()
+	
+	// 만약 InnerClass에 -> 또는 * 연산자로 접근할 때 뭔가를 하고 싶게 만들고 싶다면
+	// 스마트 포인터처럼 한번 더 감싸는 클래스가 필요하다.
+}
 void OperatorOverload::Main() {
-	NotAutoChangeCustomTypeMain();
+	SmartPointer2Main();
 }
 
