@@ -135,6 +135,20 @@ namespace OperatorOverload {
 		InnerClass* operator->();
 		InnerClass& operator*();
 	};
+	class InnerClass2 {
+	public:
+		int value;
+		void print();
+	};
+	class CustomSmartPointer2 {
+	public:
+		InnerClass2* ptr;
+		CustomSmartPointer2(InnerClass2*);
+		~CustomSmartPointer2();
+		InnerClass2& operator*();
+		InnerClass2* operator->();
+		CustomSmartPointer2& operator=(InnerClass2&);
+	};
 }
 #else
 #error header aleary include

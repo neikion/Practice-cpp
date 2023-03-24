@@ -290,7 +290,57 @@ void SmartPointer2Main() {
 	// 만약 InnerClass에 -> 또는 * 연산자로 접근할 때 뭔가를 하고 싶게 만들고 싶다면
 	// 스마트 포인터처럼 한번 더 감싸는 클래스가 필요하다.
 }
+
+InnerClass2& CustomSmartPointer2::operator*() {
+	return *ptr;
+}
+
+InnerClass2* CustomSmartPointer2::operator->() {
+	return ptr;
+}
+void InnerClass2::print() {
+	cout << value << endl;
+}
+CustomSmartPointer2::CustomSmartPointer2(InnerClass2* inptr)
+	:ptr(inptr) {
+
+}
+
+CustomSmartPointer2::~CustomSmartPointer2() {
+	cout << "delete" << endl;
+	delete ptr;
+}
+
+//기존 객체를 함수에서 delete해줘야 되므로
+//잘 쓰던 포인터가 헤제될 수 있어 별로 좋은 방법이 아닌듯.
+CustomSmartPointer2& CustomSmartPointer2::operator=(InnerClass2& right) {
+	cout << this->ptr << endl << &right << endl;
+	//주소 비교
+	if (ptr != &right) {
+		if (ptr->value != right.value) {
+			InnerClass2* temp = ptr;
+			(this->ptr) = &right;
+			delete temp;
+		}
+	}
+	cout << this->ptr << endl << &right << endl;
+	return *this;
+}
+
+// 커스텀 스마트 포인터에 포인터가 아닌 int 자로형처럼
+// =를 이용해서 내용물을 쉽게 바꿔보고 싶었다.
+void SmartPointer3Main() {
+	InnerClass2* t1 = new InnerClass2;
+	t1->value = 20;
+	InnerClass2* t2 = new InnerClass2;
+	t2->value = 30;
+	CustomSmartPointer2 sp(t1);
+	sp->print();
+	//원하던 것.
+	sp = *t2;
+	sp->print();
+}
 void OperatorOverload::Main() {
-	SmartPointer2Main();
+	SmartPointer3Main();
 }
 
