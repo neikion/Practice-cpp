@@ -5,9 +5,9 @@
 using namespace std;
 #include "Book_Practice/Book_Practice1.h"
 
-#include "test2/test2_2.h"
-#include "test2/test2_1.h"
-#include "test3/MultipleInheritance.h"
+#include "MyStudy/Practice_Include/test2_2.h"
+#include "MyStudy/Practice_Include//test2_1.h"
+#include "MyStudy/MultipleInheritance.h"
 
 #include "Book_Practice/Generic_Practice.h"
 #include "Book_Practice/Virtual_Practice.h"
