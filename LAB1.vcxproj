@@ -146,9 +146,11 @@
     <ClCompile Include="Book_Practice\Return_Practice.cpp" />
     <ClCompile Include="Book_Practice\Virtual_Practice.cpp" />
     <ClCompile Include="LAB1.cpp" />
-    <ClCompile Include="test2\test2_1.cpp" />
-    <ClCompile Include="test2\test2_2.cpp" />
-    <ClCompile Include="test3\MultipleInheritance.cpp" />
+    <ClCompile Include="MyStudy\MultipleInheritance.cpp" />
+    <ClCompile Include="MyStudy\MyFunctional.cpp" />
+    <ClCompile Include="MyStudy\MyThread.cpp" />
+    <ClCompile Include="MyStudy\Practice_Include\test2_1.cpp" />
+    <ClCompile Include="MyStudy\Practice_Include\test2_2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Book_Practice\Book_Practice1.h" />
@@ -157,13 +159,17 @@
     <ClInclude Include="Book_Practice\OperatorOverload.h" />
     <ClInclude Include="Book_Practice\Return_Practice.h" />
     <ClInclude Include="Book_Practice\Virtual_Practice.h" />
-    <ClInclude Include="test2\test2_1.h" />
-    <ClInclude Include="test2\test2_2.h" />
-    <ClInclude Include="test2\test2_3.h" />
-    <ClInclude Include="test3\MultipleInheritance.h" />
+    <ClInclude Include="MyStudy\MultipleInheritance.h" />
+    <ClInclude Include="MyStudy\MyFunctional.h" />
+    <ClInclude Include="MyStudy\MyThread.h" />
+    <ClInclude Include="MyStudy\Practice_Include\test2_1.h" />
+    <ClInclude Include="MyStudy\Practice_Include\test2_2.h" />
+    <ClInclude Include="MyStudy\Practice_Include\test2_3.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resource\constructor exception.txt" />
+    <Text Include="Resource\stl list clear.txt" />
+    <Text Include="Resource\stl list push vs emplace.txt" />
     <Text Include="Resource\why minimize use of new.txt" />
     <Text Include="Resource\note.txt" />
   </ItemGroup>

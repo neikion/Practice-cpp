@@ -14,6 +14,7 @@ using namespace std;
 #include "Book_Practice/Return_Practice.h"
 #include "Book_Practice/OperatorOverload.h"
 #include "Book_Practice/ExceptionPractice.h"
+#include "MyStudy/MyThread.h"
 int main()
 {
     /*test 1
@@ -59,6 +60,11 @@ int main()
     /* test 8
     예외 처리
     */
-    ExceptionPractice::Main();
+    //ExceptionPractice::Main();
+    
+    /* test 9
+    쓰레드
+    */
+    MyThead::Main();
     return 0;
 }
