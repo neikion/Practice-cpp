@@ -15,6 +15,7 @@ using namespace std;
 #include "Book_Practice/OperatorOverload.h"
 #include "Book_Practice/ExceptionPractice.h"
 #include "MyStudy/MyThread.h"
+#include "MyStudy/MyFunctional.h"
 int main()
 {
     /*test 1
@@ -65,6 +66,11 @@ int main()
     /* test 9
     쓰레드
     */
-    MyThead::Main();
+    //MyThead::Main();
+
+    /* test 10
+    함수 객체
+    */
+    MyFunctional::Main();
     return 0;
 }
