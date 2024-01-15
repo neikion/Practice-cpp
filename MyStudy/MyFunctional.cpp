@@ -11,11 +11,10 @@ namespace MyFunctional {
 	class anyclass {
 	public:
 		int localvalue = 0;
-		anyclass():localvalue(0) {
-			
-		}
+		anyclass():localvalue(0) {}
+		anyclass(int value) :localvalue(value) {}
 		anyclass(const anyclass& value) {
-			cout << "copy" << endl;
+			cout << "call copy constructor " << endl;
 			this->localvalue = value.localvalue;
 		}
 
@@ -32,11 +31,17 @@ namespace MyFunctional {
 		void anyconstfunc(int value) const {
 			cout << "int data" << value + localvalue << endl;
 		}
+
+		anyclass(anyclass&& value) noexcept{
+			cout << "call move constructor" << endl;
+			this->localvalue = value.localvalue;
+		}
 	};
 
 	void Main() {
 		//case1();
-		case2();
+		//case2();
+		case3();
 	}
 
 	void case1() {
@@ -59,11 +64,39 @@ namespace MyFunctional {
 	void anyfunc2(int value1, int value2) {
 		cout << "sum result " << value1 + value2 << endl;
 	}
+	void anyfunc3(int value1, int value2) {
+		cout << "1st arg : " << value1 << " 2st arg : " << value2 << endl;
+	}
 
 	void case2() {
 		function<void(int)> func1 = bind(anyfunc2,1, placeholders::_1);
-		
 		func1(2);
+		
+		//auto 변수에 경우 해당되는 인자 이외에는 모두 무시된다.
+		auto func2 = bind(anyfunc2, placeholders::_1, 2);
+		func2(3,4,5);
 
+		//placeholders의 숫자는 파라미터의 순서에 대응한다.
+		auto func3 = bind(anyfunc3, placeholders::_2, placeholders::_1);
+		func3(1, 2);
+
+	}
+
+	void anyfunc4(anyclass& c1, const anyclass& c2) {
+		c1.localvalue = c2.localvalue;
+	}
+
+	void case3() {
+		anyclass c1{1}, c2{ 5 };
+		auto func1 = bind(anyfunc4, c1, placeholders::_1);
+		func1(c2);
+		//c1의 복사된 객체가 전달되어 함수가 실행됨.
+		//그래서 아레 c1을 출력하는 코드는 변경이 되지 않음.
+		cout << c1.localvalue << endl<<endl;
+
+		//reference_wrapper를 이용하여 c1도 변경될 수 있게할 수 있음.
+		auto func2 = bind(anyfunc4, std::ref(c1), placeholders::_1);
+		func2(c2);
+		cout << c1.localvalue << endl;
 	}
 }
