@@ -1,0 +1,15 @@
+출처 : https://novlog.tistory.com/entry/C-6-%EC%B0%B8%EC%A1%B0%EC%9E%90%EC%99%80-%ED%95%A8%EC%88%98-Const-%EC%B0%B8%EC%A1%B0%EC%9E%90%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC
+
+const 참조자가 상수를 참조 시 임시 변수를 만들고 거기에 상수를 저장하여 참조함.
+
+#include <iostream>
+using namespace std;
+
+int Add(const int &x, const int &y)
+{
+	return x + y;
+}
+
+int main(){
+	cout << Add(10, 20) << endl;
+}
