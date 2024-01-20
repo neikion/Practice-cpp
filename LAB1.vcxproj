@@ -116,6 +116,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,6 +148,7 @@
     <ClCompile Include="Book_Practice\Virtual_Practice.cpp" />
     <ClCompile Include="LAB1.cpp" />
     <ClCompile Include="MyStudy\MultipleInheritance.cpp" />
+    <ClCompile Include="MyStudy\MyConst.cpp" />
     <ClCompile Include="MyStudy\MyFunctional.cpp" />
     <ClCompile Include="MyStudy\MyThread.cpp" />
     <ClCompile Include="MyStudy\Practice_Include\test2_1.cpp" />
@@ -160,6 +162,7 @@
     <ClInclude Include="Book_Practice\Return_Practice.h" />
     <ClInclude Include="Book_Practice\Virtual_Practice.h" />
     <ClInclude Include="MyStudy\MultipleInheritance.h" />
+    <ClInclude Include="MyStudy\MyConst.h" />
     <ClInclude Include="MyStudy\MyFunctional.h" />
     <ClInclude Include="MyStudy\MyThread.h" />
     <ClInclude Include="MyStudy\Practice_Include\test2_1.h" />

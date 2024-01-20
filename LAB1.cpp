@@ -16,6 +16,7 @@ using namespace std;
 #include "Book_Practice/ExceptionPractice.h"
 #include "MyStudy/MyThread.h"
 #include "MyStudy/MyFunctional.h"
+#include "MyStudy/MyConst.h"
 int main()
 {
     /*test 1
@@ -71,6 +72,11 @@ int main()
     /* test 10
     함수 객체
     */
-    MyFunctional::Main();
+    //MyFunctional::Main();
+
+    /* test11
+    const
+    */
+    MyConst::Main();
     return 0;
 }

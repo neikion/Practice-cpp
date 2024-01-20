@@ -1,0 +1,15 @@
+출처 : https://stackoverflow.com/questions/2627166/what-is-the-difference-between-a-const-reference-and-normal-parameter
+
+const로 인수를 받는 경우 실제 파라미터가 const가 아니라면 아레와 같이 값이 변경되는 경우가 생길 수 있다.
+
+void anyfunc1(int& n1, const int& n2) {
+	n1 = n2 * 2;
+}
+void Main() {
+	case1();
+}
+void case1() {
+	int num = 1;
+	anyfunc1(num, num);
+	cout << num << endl;
+}
