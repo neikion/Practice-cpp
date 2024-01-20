@@ -1,8 +1,6 @@
 #include "MyFunctional.h"
 #include <functional>
 #include <iostream>
-#include<vector>
-#include <algorithm>
 namespace MyFunctional {
 	using namespace std;
 	void anyfunc1() {
@@ -17,7 +15,10 @@ namespace MyFunctional {
 			cout << "call copy constructor " << endl;
 			this->localvalue = value.localvalue;
 		}
-
+		anyclass& operator=(const anyclass& value) {
+			localvalue = value.localvalue;
+			return *this;
+		}
 		/// <summary>
 		/// 비상수 함수
 		/// </summary>
@@ -84,19 +85,46 @@ namespace MyFunctional {
 
 	void anyfunc4(anyclass& c1, const anyclass& c2) {
 		c1.localvalue = c2.localvalue;
+
 	}
 
 	void case3() {
 		anyclass c1{1}, c2{ 5 };
+		const anyclass c3{ 10 };
 		auto func1 = bind(anyfunc4, c1, placeholders::_1);
 		func1(c2);
 		//c1의 복사된 객체가 전달되어 함수가 실행됨.
 		//그래서 아레 c1을 출력하는 코드는 변경이 되지 않음.
-		cout << c1.localvalue << endl<<endl;
+		cout <<"객체의 값 " << c1.localvalue << endl << endl;
+
+
 
 		//reference_wrapper를 이용하여 c1도 변경될 수 있게할 수 있음.
 		auto func2 = bind(anyfunc4, std::ref(c1), placeholders::_1);
 		func2(c2);
-		cout << c1.localvalue << endl;
+		cout << "객체의 값 " << c1.localvalue << endl<<endl;
+		
+
+
+		//아레 코드는 함수 호출 시점에 객체 상태에 따라 값이 달라짐을 알 수 있음.
+		c2.localvalue = 5;
+		auto func3 = bind(anyfunc4, placeholders::_1, std::ref(c2));
+		c2.localvalue = 10;
+		func3(c1);
+		cout << "객체의 값 " << c1.localvalue << endl<<endl;
+
+
+
+		//객체의 상태에 따라 값이 바뀌는 것을 막고 싶다면 객체를 복사하여 전달하면 됨.
+		//하지만 이는 원본 c2에는 영향을 미치지 못함.
+		c2.localvalue = 10;
+		auto func4 = bind(anyfunc4, placeholders::_1, c2);
+		c2.localvalue = 5;
+		func3(c1);
+		cout << "객체의 값 " << c1.localvalue << endl;
+
+		//std::cref는 const로 참조하는 reference wrapper를 반환함.
 	}
+	
+
 }
