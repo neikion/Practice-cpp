@@ -1,0 +1,18 @@
+thread함수는 오버로딩된 함수 중 어떤 함수를 가져와야 할지 모르므로 명시적으로 표시해줘야 한다.
+이를 위한 방법으로 형변환과 람다 함수를 사용하는 방법이 있다.
+
+
+아레와 같은 오버로딩 된 함수가 있을 경우
+void test(int);
+void test(int,int);
+
+아레는 static_cast를 사용하는 방법이다.
+thread(static_cast<void(*)(int)>(test),1);
+
+
+아레는 람다 함수를 사용하는 방법이다.
+thread([](int a, int b) {test(a, b); }, 1,2)
+
+아레는 함수 포인터를 사용하는 방법이다.
+void (*t2)(int, int) = test;
+thread(t2, 1, 2);
