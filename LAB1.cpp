@@ -67,7 +67,7 @@ int main()
     /* test 9
     쓰레드
     */
-    //MyThead::Main();
+    MyThead::Main();
 
     /* test 10
     함수 객체
@@ -77,6 +77,6 @@ int main()
     /* test11
     const
     */
-    MyConst::Main();
+    //MyConst::Main();
     return 0;
 }
