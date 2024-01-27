@@ -15,7 +15,9 @@ namespace MyThead {
 	void Main() {
 		//case1();
 		//case2();
-		case3();
+		//case3();
+		//case4();
+		case5();
 	}
 	void anywork1(int& result,mutex& m) {
 		bool lockflag=false;
@@ -155,5 +157,53 @@ namespace MyThead {
 		for (int i = 0; i < 5; i++) {
 			consumerlist[i].join();
 		}
+	}
+
+	void counter(atomic<int>* count) {
+		for (int i = 0; i < 10000; i++) {
+			(*count)++;
+		}
+	}
+
+	void case4() {
+		vector<thread> threadlist;
+		atomic<int> count = 0;
+		for (int i = 0; i < 5; i++) {
+			threadlist.push_back(thread(counter,&count));
+		}
+		for (int i = 0; i < threadlist.size(); i++) {
+			threadlist[i].join();
+		}
+		cout << count<<endl;
+		
+	}
+
+	void readwrite1(atomic<int> *a,atomic<int>* b) {
+		//memory_order_relaxed : 단일 쓰레드 관점에서 결과가 동일하면 cpu명령 순서를 자유롭게 풀어준다.
+		a->store(1, memory_order_relaxed);
+		int result = b->load(memory_order_relaxed);
+		printf("1. %d \n", result);
+	}
+
+	void readwrite2(atomic<int>* a, atomic<int>* b) {
+		//memory_order_relaxed : 단일 쓰레드 관점에서 결과가 동일하면 cpu명령 순서를 자유롭게 풀어준다.
+		b->store(1, memory_order_relaxed);
+		int result = a->load(memory_order_relaxed);
+		printf("2. %d \n", result);
+	}
+	
+	void case5() {
+		vector<thread> threadlist;
+		atomic<int> a(0), b(0);
+
+		threadlist.push_back(thread(readwrite1, &a, &b));
+		threadlist.push_back(thread(readwrite2, &a, &b));
+
+		//두 함수 모두 memory_order_relaxed로 풀어주었기에 1.과 2. 모두 0이 나올 수 도 있다.
+
+		for (int i = 0; i < threadlist.size(); i++) {
+			threadlist[i].join();
+		}
+		
 	}
 }
