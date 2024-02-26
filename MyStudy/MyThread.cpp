@@ -10,9 +10,10 @@
 #include <condition_variable>
 #include <functional>
 #include <typeinfo>
+#include <future>
 namespace MyThead {
 	using namespace std;
-	
+
 	void Main() {
 		//case1();
 		//case2();
@@ -21,15 +22,19 @@ namespace MyThead {
 		//case5();
 		//case6();
 		//case7();
-		case8();
+		//case8();
+		//case9();
+		//case10();
+		case11();
+
 	}
-	void anywork1(int& result,mutex& m) {
-		bool lockflag=false;
+	void anywork1(int& result, mutex& m) {
+		bool lockflag = false;
 		for (int i = 0; i < 10000; i++) {
 			m.lock();
 			result++;
 			m.unlock();
-			
+
 		}
 	}
 	void anywork2(int& result, mutex& m) {
@@ -44,26 +49,26 @@ namespace MyThead {
 		int result = 0;
 		vector<thread> workers;
 		mutex m;
-		workers.push_back(thread(anywork1, std::ref(result),std::ref(m)));
+		workers.push_back(thread(anywork1, std::ref(result), std::ref(m)));
 		workers.push_back(thread(anywork2, std::ref(result), std::ref(m)));
 		for (int i = 0; i < workers.size(); i++) {
 			workers[i].join();
 		}
 		cout << result;
 	}
-	void producer(queue<string>* datas, mutex* m,int index) {
+	void producer(queue<string>* datas, mutex* m, int index) {
 		for (int i = 0; i < 5; i++) {
 			//some processing time
-			this_thread::sleep_for(chrono::milliseconds(100*index));
-			string content = "cotent " + to_string(i)+" working thread : "+to_string(index);
+			this_thread::sleep_for(chrono::milliseconds(100 * index));
+			string content = "cotent " + to_string(i) + " working thread : " + to_string(index);
 			m->lock();
 			datas->push(content);
 			m->unlock();
 		}
-		
+
 	}
-	
-	void consumer(queue<string>* datas, mutex* m,int* work,int index) {
+
+	void consumer(queue<string>* datas, mutex* m, int* work, int index) {
 		while (*work > 0) {
 			m->lock();
 			if (datas->empty()) {
@@ -78,26 +83,26 @@ namespace MyThead {
 			m->unlock();
 			//some processing time
 			this_thread::sleep_for(chrono::milliseconds(80));
-			printf("work : %s  working thread : %d \n",content.c_str(), index);
+			printf("work : %s  working thread : %d \n", content.c_str(), index);
 		}
 	}
-	
-	
+
+
 	void case2() {
 		queue<string> datas;
 		mutex m;
 		vector<thread> producerlist;
-		int work=25;
+		int work = 25;
 		for (int i = 0; i < 5; i++) {
 			//thread함수는 오버로딩된 함수 중 어떤 함수를 가져와야 할지 모르므로 명시적으로 표시해줘야 한다.
 			//이를 위한 방법으로 static_cast와 람다 함수를 사용하는 방법이 있다.
 			//아레는 static_cast를 사용하는 방법이다.
-			producerlist.push_back(thread(static_cast<void (*)(queue<string>*,mutex*,int)>(producer), &datas, &m, i));
+			producerlist.push_back(thread(static_cast<void (*)(queue<string>*, mutex*, int)>(producer), &datas, &m, i));
 		}
-		
+
 		vector<thread> consumerlist;
 		for (int i = 0; i < 5; i++) {
-			consumerlist.push_back(thread(static_cast<void (*)(queue<string>*,mutex*,int*,int)>(consumer), &datas,&m, &work,i));
+			consumerlist.push_back(thread(static_cast<void (*)(queue<string>*, mutex*, int*, int)>(consumer), &datas, &m, &work, i));
 		}
 
 		for (int i = 0; i < 5; i++) {
@@ -118,7 +123,7 @@ namespace MyThead {
 			cv->notify_one();
 		}
 	}
-	void consumer(queue<string>* datas, mutex* m, int* work, int index,condition_variable* cv) {
+	void consumer(queue<string>* datas, mutex* m, int* work, int index, condition_variable* cv) {
 		while (*work > 0) {
 			unique_lock<mutex> ul(*m);
 			cv->wait(ul, [&work, &datas] {return *work == 0 || !datas->empty(); });
@@ -146,13 +151,13 @@ namespace MyThead {
 			//thread함수는 오버로딩된 함수 중 어떤 함수를 가져와야 할지 모르므로 명시적으로 표시해줘야 한다.
 			//이를 위한 방법으로 static_cast와 람다 함수를 사용하는 방법이 있다.
 			//아레는 람다 함수를 사용하는 방법이다.
-			producerlist.push_back(thread([](queue<string>* datas, mutex* m, int i, condition_variable* cv)->void{ producer(datas, m, i, cv); }, &datas, &m, i, &cv));
+			producerlist.push_back(thread([](queue<string>* datas, mutex* m, int i, condition_variable* cv)->void { producer(datas, m, i, cv); }, &datas, &m, i, &cv));
 		}
 		vector<thread> consumerlist;
 		for (int i = 0; i < 5; i++) {
-			consumerlist.push_back(thread([](queue<string>* datas, mutex* m, int* work, int index, condition_variable* cv)->void { consumer(datas,m,work,index,cv); }, &datas, &m, &work, i,&cv));
+			consumerlist.push_back(thread([](queue<string>* datas, mutex* m, int* work, int index, condition_variable* cv)->void { consumer(datas, m, work, index, cv); }, &datas, &m, &work, i, &cv));
 		}
-		
+
 		for (int i = 0; i < 5; i++) {
 			producerlist[i].join();
 		}
@@ -173,16 +178,16 @@ namespace MyThead {
 		vector<thread> threadlist;
 		atomic<int> count = 0;
 		for (int i = 0; i < 5; i++) {
-			threadlist.push_back(thread(counter,&count));
+			threadlist.push_back(thread(counter, &count));
 		}
 		for (int i = 0; i < threadlist.size(); i++) {
 			threadlist[i].join();
 		}
-		cout << count<<endl;
-		
+		cout << count << endl;
+
 	}
 
-	void readwrite1(atomic<int> *a,atomic<int>* b) {
+	void readwrite1(atomic<int>* a, atomic<int>* b) {
 		//memory_order_relaxed : 단일 쓰레드 관점에서 결과가 동일하면 cpu명령 순서를 자유롭게 풀어준다.
 		a->store(1, memory_order_relaxed);
 		int result = b->load(memory_order_relaxed);
@@ -195,7 +200,7 @@ namespace MyThead {
 		int result = a->load(memory_order_relaxed);
 		printf("2. %d \n", result);
 	}
-	
+
 	void case5() {
 		vector<thread> threadlist;
 		atomic<int> a(0), b(0);
@@ -212,17 +217,17 @@ namespace MyThead {
 		//memory_order_acquire : 메모리 로드 작업. 해당 명령 뒤에 오는 모든 메모리 명령들이 해당 명령 위로 재배치 되는 것을 금지
 		//memory_order_acq_rel : acquire 와 release 를 모두 수행
 		//memory_order_seq_cst : 순차적 일관성 보장. ARM cpu같은 경우 비싼 연산임.
-		
+
 	}
 	template<size_t n>
-	void producer(atomic<int> (&data)[n], atomic<bool>& ready) {
+	void producer(atomic<int>(&data)[n], atomic<bool>& ready) {
 		data[0].store(1, memory_order_relaxed);
 		data[1].store(1, memory_order_relaxed);
 		data[2].store(1, memory_order_relaxed);
 		ready.store(true, memory_order_release);
 	}
 	template<size_t n>
-	void consumer(atomic<int> (&data)[n], atomic<bool>& ready) {
+	void consumer(atomic<int>(&data)[n], atomic<bool>& ready) {
 		while (!ready.load(memory_order_acquire)) {
 
 		}
@@ -264,7 +269,7 @@ namespace MyThead {
 			++(*c);
 		}
 	}
-	void read_a_than_b1(atomic<bool>* a,atomic<bool>* b,atomic<int>* c) {
+	void read_a_than_b1(atomic<bool>* a, atomic<bool>* b, atomic<int>* c) {
 		while (!a->load(memory_order_acquire)) {
 
 		}
@@ -274,7 +279,7 @@ namespace MyThead {
 	}
 
 	void case7() {
-		
+
 		thread t1, t2, t3, t4;
 		atomic<bool> a, b;
 		atomic<int> c(0);
@@ -287,8 +292,8 @@ namespace MyThead {
 		t3.join();
 		t4.join();
 		int result = c.load(memory_order_acquire);
-		cout << result <<endl;
-		
+		cout << result << endl;
+
 		// memory_order_seq_cst이외에 memory order는 상태가 어떻게 바뀔지는 동의하나, 
 		// 각 쓰레드 사이에서 누가 먼저 상태를 변화할지는 동의하지 않음.
 		// cpu 1 에서 write_a -> read_b_than_a 가능
@@ -340,4 +345,70 @@ namespace MyThead {
 		// memory_order_seq_cst : 해당 명령을 사용하는 메모리 연산들 사이에는 모든 쓰레드에서 동일한 순서로 보일 것을 보장
 
 	}
+	atomic<int> x(0), y(0), r1, r2, r3;
+	void Thread1() {
+		x.store(1, std::memory_order_seq_cst); // A
+		y.store(1, std::memory_order_release); // B
+	}
+	void Thread2() {
+		r1 = y.fetch_add(1, std::memory_order_seq_cst); // C
+		r2 = y.load(std::memory_order_relaxed); // D
+	}
+
+	void Thread3() {
+		y.store(3, std::memory_order_seq_cst); // E
+		r3 = x.load(std::memory_order_seq_cst); // F
+	}
+	void case9() {
+		thread t1, t2, t3;
+		t1 = thread(Thread1);
+		t2 = thread(Thread2);
+		t3 = thread(Thread3);
+		t1.join();
+		t2.join();
+		t3.join();
+		cout << r1 << r2 << r3 << endl;
+	}
+	void anywork3(promise<int>* i) {
+		i->set_value(1);
+	}
+	void case10() {
+		promise<int> pro;
+		future<int> data = pro.get_future();
+		thread t1(anywork3, &pro);
+
+		data.wait();
+
+		//wait가 리턴됬다면 결과값이 준비되었다는 의미다.
+		//wait 없이 get을 하더라도 wait한 후 결과를 돌려준다.
+		//get은 데이터를 이동시킨다. 그러므로 get을 두 번 호출하면 안된다.
+		cout << data.get() << endl;
+		t1.join();
+	}
+	void anywork4(promise<int>* pro) {
+		try {
+			throw runtime_error("some error");
+		}
+		catch(...){
+			pro->set_exception(current_exception());
+		}
+	}
+
+	void case11() {
+		promise<int> pro;
+		future<int> result = pro.get_future();
+		thread t1(anywork4, &pro);
+		result.wait();
+		try {
+			cout << result.get() << endl;
+		}
+		catch (const exception& e) {
+			cout <<"exception : " << e.what() << endl;
+		}
+		
+		t1.join();
+	}
+
+
+
 }

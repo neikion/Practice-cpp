@@ -9,5 +9,8 @@ namespace MyThead {
 	void case6();
 	void case7();
 	void case8();
+	void case9();
+	void case10();
+	void case11();
 }
 
