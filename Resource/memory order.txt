@@ -57,7 +57,9 @@ seq_cst는 모든 쓰레드들이 seq_cst연산의 순서에 동의합니다.
 이런 혼합은 근본적으로 seq_cst연산을 acq/rel로 강등시킵니다.
 일부 seq_cst특성을 유지할 수 있으나 의존하지 않는 것이 좋습니다.
 (
-아레 코드는 c++20 이전에 표준에서는 금지되었지만, 아키텍처에 따라 가능했다.
+단일 전역순서는 happens-before와 반드시 일치하지는 않는다.
+
+아레 코드는 c++20 이전의 표준에서는 금지되었지만, 아키텍처에 따라 가능했으며, c++20부터 가능하도록 표준이 수정되었다.
 x와 y가 0으로 초기화 될 때
 // Thread 1:
 x.store(1, std::memory_order_seq_cst); // A
@@ -107,3 +109,42 @@ seq-cst연산과 rel/acq 연산 사이간에 동기화는 전역 seq-cst order�
 atomic_thread_fence(seq_cst)
 모든 쓰레드는 seq_cst펜스의 순서에 동의합니다.(seq_cst펜스는 seq_cst작업의 전역 순서에 참여함)
 본질적으로 원자적 연산이 재배치 되는 것을 방지합니다.
+
+atomic_bool x = true;
+atomic_bool y = true;
+
+// Thread 1:
+x.store(false, relaxed);
+atomic_thread_fence(seq_cst);
+if (y.load(relaxed)) {...}
+
+// Thread 2:
+y.store(false, relaxed);
+atomic_thread_fence(seq_cst);
+if (x.load(relaxed)) {...}
+
+위 코드에서 두 쓰레드 모두 같은 시간에 if문 안으로 접근하지 못합니다.
+fence 너머 load의 order를  store전에 다시 지정하는 것이 필요하기 때문입니다.
+표준에서는 order를 다시 지정하는 측면에서는 설명하지 않으나, seq_cst 연산의 적연순서를 어떻게 배치되는 지를 통해서 설명합니다.
+
+(
+일관성 순서에 대한 표준
+다음 중 하나라도 참인 경우, 원자적 객체 M에 원자적 연산A가 다른 원자적 연산 B 이전에 일관성 순서를 이룹니다.
+1. A는 수정, B는 A에 의해 저장된(store) 값을 읽습니다.
+2. 수정 순서 M에서 A는 B에 선행합니다.
+3. A는 원자적 수정 X에 의해 저장된(store) 값을 읽고, X는 수정 순서에서 B 보다 선행, 그리고 A와 B는 같은 원자적 읽기-수정-쓰기 연산이 아닙니다.
+4. A는 X 이전에 일관성 순서를 이루고, X는 B 이전에 일광선 순서를 이룹니다.
+
+객체 M에 모든 원자적 연산 쌍 A와 B에 대헤, A는 B이전에 일관성 순서(coherence-ordered-before)를 이룬다.
+1. A와 B 모두 memory_order_seq_cst연산이면, S에서 A는 B 보다 선행한다.
+2. A는 memory_order_seq_cst연산이고, B가 memory_order_seq_cst 펜스 Y 이전에 발생했을 때, S에서 A는 Y보다 선행한다.
+3. memory_order_seq_cst 펜스 X가 A 이전에 발생하고, B는 memory_order_seq_cst연산일 때, S에서 X는 B보다 선행합니다.
+4. memory_order_seq_cst 펜스 X가 A 이전에 발생하고, B가 memory_order_seq_cst 펜스 Y이전에 발생하면, X는 Y보다 선행한다.
+)
+
+위의 코드에서 첫 번째 스레드가 if에 들어가면 첫 번째 펜스가 두 번째 보다 빠른 순서가 되어야 합니다.
+첫 번째 스레드가 if문에 들어갈 경우 첫 번째 펜스는 두 번째 펜스보다 먼저 호출되어야 합니다.
+seq_cst펜스는 연관된 그 이전 상태를 모두 확인했다는 의미임.
+스레드 1의 if문에 들어갈 경우, y.load의 조건이 true였다는 이야기고, 이는 스레드 2의 y.store를 관찰했다는 의미가 됨. 즉, 스레드 1이 스레드 2가 y.store를 하는 것을 관찰해야 된다는 것을 의미함.
+반대로 두 스레드가 동시에 if문에 들어갈 경우, 서로가 서로의 이전 상태(store가 되었는지)를 미리 확인해야 된다는 의미가 되므로 모순이됨.
+그러므로, 동시에 같은 if문에 접근할 수 없음.
