@@ -25,8 +25,10 @@ namespace MyThead {
 		//case8();
 		//case9();
 		//case10();
-		case11();
-
+		//case11();
+		//case12();
+		//case13();
+		case14();
 	}
 	void anywork1(int& result, mutex& m) {
 		bool lockflag = false;
@@ -375,6 +377,8 @@ namespace MyThead {
 	void case10() {
 		promise<int> pro;
 		future<int> data = pro.get_future();
+		//promise는 복상 생성이 불가하다.
+		//아레는 promise에 주소를 넘겨주는 방식.
 		thread t1(anywork3, &pro);
 
 		data.wait();
@@ -408,7 +412,52 @@ namespace MyThead {
 		
 		t1.join();
 	}
+	void anywork5(promise<void>* p) {
+		this_thread::sleep_for(chrono::seconds(5));
+		p->set_value();
+	}
+	void case12() {
+		//void의 경우 어떤한 객체도 전달하지 않지만, future의 set의 여부에 따라 플래그 역할을 수행 가능
+		promise<void> pro;
+		//get_future를 통해 future 객체를 받는 것은 한번만 가능하다.
+		future<void> data = pro.get_future();
 
+		thread t1 = thread(anywork5, &pro);
+		while (data.wait_for(chrono::seconds(1))!=future_status::ready) {
+			cout << ">";
+		}
+		cout << "done"<<endl;
+		t1.join();
+	}
+	void anywork6(shared_future<void> sf) {
+		sf.get();
+		printf("go \n");
+	}
+	void case13() {
+		promise<void> pro;
+		shared_future<void> sf = pro.get_future();
+		thread t1(anywork6, sf), t2(anywork6, sf), t3(anywork6, sf), t4(anywork6, sf);
+		cout << "ready" << endl;
+		this_thread::sleep_for(chrono::seconds(2));
+		cout << "start" << endl;
+		pro.set_value();
+		t1.join();
+		t2.join();
+		t3.join();
+		t4.join();
+	}
 
-
+	int anywork7(int n) {
+		return n + 1;
+	}
+	void case14() {
+		// 직접 promise를 전달할 필요 없이 동기함수를 비동기적으로 처리해준다.
+		// 예외가 발생할 경우 알아서 future로 예외를 담아 던진다.
+		packaged_task<int(int)> task(anywork7);
+		future<int> result = task.get_future();
+		//packaged_task는 복사 생성이 불가하다.
+		thread t1(move(task),1);
+		cout << "result " << result.get() << endl;
+		t1.join();
+	}
 }
