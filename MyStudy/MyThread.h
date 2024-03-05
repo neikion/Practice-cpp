@@ -71,5 +71,10 @@ namespace MyThead {
 	/// packaged_task
 	/// </summary>
 	void case14();
+
+	/// <summary>
+	/// async
+	/// </summary>
+	void case15();
 }
 

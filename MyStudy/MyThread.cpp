@@ -28,7 +28,8 @@ namespace MyThead {
 		//case11();
 		//case12();
 		//case13();
-		case14();
+		//case14();
+		case15();
 	}
 	void anywork1(int& result, mutex& m) {
 		bool lockflag = false;
@@ -393,7 +394,7 @@ namespace MyThead {
 		try {
 			throw runtime_error("some error");
 		}
-		catch(...){
+		catch (...) {
 			pro->set_exception(current_exception());
 		}
 	}
@@ -407,9 +408,9 @@ namespace MyThead {
 			cout << result.get() << endl;
 		}
 		catch (const exception& e) {
-			cout <<"exception : " << e.what() << endl;
+			cout << "exception : " << e.what() << endl;
 		}
-		
+
 		t1.join();
 	}
 	void anywork5(promise<void>* p) {
@@ -423,10 +424,10 @@ namespace MyThead {
 		future<void> data = pro.get_future();
 
 		thread t1 = thread(anywork5, &pro);
-		while (data.wait_for(chrono::seconds(1))!=future_status::ready) {
+		while (data.wait_for(chrono::seconds(1)) != future_status::ready) {
 			cout << ">";
 		}
-		cout << "done"<<endl;
+		cout << "done" << endl;
 		t1.join();
 	}
 	void anywork6(shared_future<void> sf) {
@@ -456,8 +457,29 @@ namespace MyThead {
 		packaged_task<int(int)> task(anywork7);
 		future<int> result = task.get_future();
 		//packaged_task는 복사 생성이 불가하다.
-		thread t1(move(task),1);
+		thread t1(move(task), 1);
 		cout << "result " << result.get() << endl;
 		t1.join();
+	}
+	int anywork8(const vector<int>& list, int start, int end) {
+		int total = 0;
+		for (int i = start; i < end; i++) {
+			total += list[i];
+		}
+		return total;
+	}
+	int parallelSum(const vector<int>& list) {
+		future<int> future1 = async(std::launch::async, anywork8, cref(list), 0, list.size() / 2);
+		int half = anywork8(list, list.size() / 2, list.size());
+		return half + future1.get();
+	}
+	void case15() {
+		vector<int> ilist;
+		ilist.resize(1000);
+		for (int i = 0; i < ilist.size(); i++) {
+			ilist[i] = i+1;
+		}
+		cout <<"1부터 1000까지 합 : " << parallelSum(ilist) << endl;
+
 	}
 }
