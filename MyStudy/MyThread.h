@@ -76,5 +76,10 @@ namespace MyThead {
 	/// async
 	/// </summary>
 	void case15();
+
+	/// <summary>
+	/// thred pool
+	/// </summary>
+	void case16();
 }
 

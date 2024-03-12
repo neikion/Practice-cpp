@@ -29,7 +29,8 @@ namespace MyThead {
 		//case12();
 		//case13();
 		//case14();
-		case15();
+		//case15();
+		case16();
 	}
 	void anywork1(int& result, mutex& m) {
 		bool lockflag = false;
@@ -481,5 +482,91 @@ namespace MyThead {
 		}
 		cout <<"1부터 1000까지 합 : " << parallelSum(ilist) << endl;
 
+	}
+	class tpool {
+	private:
+		size_t limit;
+		vector<thread> workers;
+		queue<function<void()>> jobs;
+		condition_variable cv;
+		mutex checkJobs;
+		bool shutdown;
+		void worker() {
+			while (!shutdown) {
+				unique_lock<mutex> ul(checkJobs);
+				cv.wait(ul, [job = &jobs,shutdown=&shutdown]() {return !job->empty() || shutdown; });
+				if (shutdown) {
+					ul.unlock();
+					return;
+				}
+				function<void()> work = move(jobs.front());
+				jobs.pop();
+				ul.unlock();
+				work();
+			}
+		}
+		void init() {
+			workers.reserve(limit);
+			for (size_t i = 0; i < limit; i++) {
+				workers.push_back( move( thread( mem_fn(&tpool::worker), this) ) );
+			}
+		}
+	public:
+		tpool() :shutdown(false),limit(static_cast<size_t>(thread::hardware_concurrency())) {
+			init();
+		}
+		tpool(int value) : limit(value), shutdown(false) {
+			init();
+		}
+		//read invoke_result_t
+		template<typename T,typename... args>
+		future<T> push(T work, args... value) {
+			promise<T> p;
+			future<T> result = p.get_future();
+			{
+				lock_guard<mutex> lg(checkJobs);
+				/*auto works = [&tvalue = value, tpro = move(p),work1=work]() {
+					tpro.set_exception_at_thread_exit(work(tvalue));
+				};*/
+				//jobs.push(move(works));
+			}
+			return move(result);
+		}
+		~tpool() {
+			shutdown = true;
+			cv.notify_all();
+			for (size_t i = 0; i < workers.size();i++) {
+				workers[i].join();
+			}
+		}
+
+	};
+	class anyclass {
+	public:
+		anyclass() {
+			cout << "default constructor\n";
+		}
+		anyclass(const anyclass& value) {
+			cout << "copy constructor\n";
+		}
+		anyclass(anyclass&& value) noexcept {
+			cout << "move constructor\n";
+		}
+		~anyclass() {
+			cout << "destructor\n";
+		}
+		anyclass& operator=(const anyclass& value) {
+			cout << "copy value assignment\n";
+		}
+		anyclass& operator=(const anyclass&& value) noexcept {
+			cout << "move value assignemt\n";
+		}
+		
+	};
+	void case16() {
+		tpool mypool;
+		mypool.push([] {
+			this_thread::sleep_for(chrono::seconds(3));
+		});
 	}
 }
