@@ -453,7 +453,7 @@ namespace MyThead {
 		return n + 1;
 	}
 	void case14() {
-		// 직접 promise를 전달할 필요 없이 동기함수를 비동기적으로 처리해준다.
+		// 직접 promise를 전달할 필요 없이 함수를 비동기적으로 처리가능하게 만든다.
 		// 예외가 발생할 경우 알아서 future로 예외를 담아 던진다.
 		packaged_task<int(int)> task(anywork7);
 		future<int> result = task.get_future();
@@ -518,16 +518,16 @@ namespace MyThead {
 		tpool(int value) : limit(value), shutdown(false) {
 			init();
 		}
+
 		//read invoke_result_t
 		template<typename T,typename... args>
-		future<T> push(T work, args... value) {
-			promise<T> p;
-			future<T> result = p.get_future();
+		future<typename invoke_result<T, args...>::type>&& push(T work, args... value) {
+			
+			using ReturnType = typename invoke_result<T, args...>::type;
+			packaged_task<ReturnType()> works(bind(work,value...));
+			future<ReturnType> result = works.get_future();
 			{
 				lock_guard<mutex> lg(checkJobs);
-				/*auto works = [&tvalue = value, tpro = move(p),work1=work]() {
-					tpro.set_exception_at_thread_exit(work(tvalue));
-				};*/
 				//jobs.push(move(works));
 			}
 			return move(result);
@@ -563,10 +563,17 @@ namespace MyThead {
 		}
 		
 	};
+	template<typename t>
+	void anytemplate(t someclass){
+		int num = 0;
+		typename t::type *a;
+		t::variable * num;
+	}
 	void case16() {
 		tpool mypool;
 		mypool.push([] {
 			this_thread::sleep_for(chrono::seconds(3));
 		});
 	}
+
 }
