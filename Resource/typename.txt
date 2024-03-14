@@ -1,0 +1,23 @@
+typename 기능
+1. 템플릿 매개변수를 선언할 때 사용
+2. 의존 이름이 타입임을 명확히 밝힘
+
+
+의존이름
+template<typename t>
+void anytemplate(t someclass){
+	int num = 0;
+	typename t::type *a;
+	t::variable * num;
+}
+
+someclass와 같이 템플릿 매개변수(t와 같은)에 따라 바뀌는 것.
+
+
+t::type, t::variable과 같이 의존 이름이 중첩되면(t에 영향받는 type과 variable) 이것이 표현문인지, 선언인지 명확히 알리기 위해 typename을 사용한다.
+
+1. anyclass::type *a; // type의 포인터 변수 생성
+2. anyclass::variable * num; //variable과 num을 곱함.
+
+컴파일러는 템플릿을 인스턴스화하기 전 위 두가지 경우를 구별해야된다.
+그래서 기본적으로 2번으로 해석하고, 1번을 원하는 경우 typename을 사용하여 type임을 명확히 밝히도록 한다.
