@@ -494,13 +494,16 @@ namespace MyThead {
 		void worker() {
 			while (!shutdown) {
 				unique_lock<mutex> ul(checkJobs);
-				cv.wait(ul, [job = &jobs,shutdown=&shutdown]() {return !job->empty() || shutdown; });
+				cv.wait(ul, [job = &jobs, shutdown = &shutdown]() {
+					return *shutdown || !job->empty();
+				});
 				if (shutdown) {
 					ul.unlock();
 					return;
 				}
 				function<void()> work = move(jobs.front());
 				jobs.pop();
+				cout << "working..." << endl;
 				ul.unlock();
 				work();
 			}
@@ -521,16 +524,22 @@ namespace MyThead {
 
 		//read invoke_result_t
 		template<typename T,typename... args>
-		future<typename invoke_result<T, args...>::type>&& push(T work, args... value) {
+		future<typename invoke_result<T, args...>::type> push(T work, args... value) {
+			if (shutdown) {
+				throw exception("already shutdown");
+			}
 			
 			using ReturnType = typename invoke_result<T, args...>::type;
 			packaged_task<ReturnType()> works(bind(work,value...));
 			future<ReturnType> result = works.get_future();
 			{
 				lock_guard<mutex> lg(checkJobs);
-				//jobs.push(move(works));
+				jobs.push([works1=move(&works)]()
+					{works1;});
 			}
-			return move(result);
+			
+			cv.notify_one();
+			return result;
 		}
 		~tpool() {
 			shutdown = true;
@@ -563,17 +572,16 @@ namespace MyThead {
 		}
 		
 	};
-	template<typename t>
-	void anytemplate(t someclass){
-		int num = 0;
-		typename t::type *a;
-		t::variable * num;
+	int anywork9() {
+		//this_thread::sleep_for(chrono::seconds(3));
+		cout << "test" << endl;
+		return 1;
 	}
 	void case16() {
 		tpool mypool;
-		mypool.push([] {
-			this_thread::sleep_for(chrono::seconds(3));
-		});
+		auto test = mypool.push(anywork9);
+		cout << test.get() << endl;
+		
 	}
 
 }
