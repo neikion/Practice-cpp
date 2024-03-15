@@ -11,6 +11,7 @@
 #include <functional>
 #include <typeinfo>
 #include <future>
+#include <memory>
 namespace MyThead {
 	using namespace std;
 
@@ -496,9 +497,8 @@ namespace MyThead {
 				unique_lock<mutex> ul(checkJobs);
 				cv.wait(ul, [job = &jobs, shutdown = &shutdown]() {
 					return *shutdown || !job->empty();
-				});
+					});
 				if (shutdown) {
-					ul.unlock();
 					return;
 				}
 				function<void()> work = move(jobs.front());
@@ -530,17 +530,33 @@ namespace MyThead {
 			}
 			
 			using ReturnType = typename invoke_result<T, args...>::type;
+			//test
 			packaged_task<ReturnType()> works(bind(work,value...));
+			packaged_task<ReturnType()>* some=&works;
 			future<ReturnType> result = works.get_future();
 			{
 				lock_guard<mutex> lg(checkJobs);
-				jobs.push([works1=move(&works)]()
-					{works1;});
+				jobs.push(
+					[some]() mutable{(*some)(); }
+				);
 			}
-			
 			cv.notify_one();
 			return result;
 		}
+		template<typename T>
+		void push(T work) {
+			if (shutdown) {
+				throw exception("already shutdown");
+			}
+			{
+				lock_guard<mutex> lg(checkJobs);
+				jobs.push(
+					[work]() {work(); }
+				);
+			}
+			cv.notify_one();
+		}
+
 		~tpool() {
 			shutdown = true;
 			cv.notify_all();
@@ -572,16 +588,19 @@ namespace MyThead {
 		}
 		
 	};
-	int anywork9() {
-		//this_thread::sleep_for(chrono::seconds(3));
-		cout << "test" << endl;
-		return 1;
+	void anywork9() {
+		cout << "void function test" << endl;
 	}
+	int anywork9(int i) {
+		this_thread::sleep_for(chrono::seconds(3));
+		return i;
+	}
+	
 	void case16() {
 		tpool mypool;
-		auto test = mypool.push(anywork9);
+		auto test=mypool.push(static_cast<int(*)(int)>(anywork9), 1);
+		test.wait();
 		cout << test.get() << endl;
-		
 	}
 
 }
