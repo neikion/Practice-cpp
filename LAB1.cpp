@@ -17,6 +17,7 @@ using namespace std;
 #include "MyStudy/MyThread.h"
 #include "MyStudy/MyFunctional.h"
 #include "MyStudy/MyConst.h"
+#include "MyStudy/MyTransferVariable.h"
 int main()
 {
     /*test 1
@@ -67,7 +68,7 @@ int main()
     /* test 9
     쓰레드
     */
-    MyThead::Main();
+    //MyThead::Main();
 
     /* test 10
     함수 객체
@@ -78,5 +79,9 @@ int main()
     const
     */
     //MyConst::Main();
+    /* test12
+    rvalue
+    */
+    TransferVariable::main();
     return 0;
 }
