@@ -530,16 +530,14 @@ namespace MyThead {
 			}
 			
 			using ReturnType = typename invoke_result<T, args...>::type;
-			//test
-			packaged_task<ReturnType()> works(bind(work,value...));
-			packaged_task<ReturnType()>* some=&works;
-			future<ReturnType> result = works.get_future();
+			//packaged_task<ReturnType()> works(bind(work,value...));
+			packaged_task<ReturnType()>* some = new packaged_task<ReturnType()>(bind(work,value...));
+			future<ReturnType> result = some->get_future();
 			{
 				lock_guard<mutex> lg(checkJobs);
-				jobs.push(
-					[some]() mutable{(*some)(); }
-				);
+				jobs.push([some]() {(*some)(); delete some; });
 			}
+			some = NULL;
 			cv.notify_one();
 			return result;
 		}
@@ -583,7 +581,7 @@ namespace MyThead {
 		anyclass& operator=(const anyclass& value) {
 			cout << "copy value assignment\n";
 		}
-		anyclass& operator=(const anyclass&& value) noexcept {
+		anyclass& operator=(anyclass&& value) noexcept {
 			cout << "move value assignemt\n";
 		}
 		
