@@ -45,8 +45,72 @@ namespace TransferVariable {
 		anyclass2 b(move(a));
 
 	}
+	
+	class anyclass3{
+	public:
+		int value;
+	};
+
+	void anywork2(anyclass3& value) {
+		cout << "reference" << endl;
+	}
+	void anywork2(const anyclass3& value) {
+		cout << "const reference" << endl;
+	}
+	void anywork2(anyclass3&& value) {
+		cout << "move" << endl;
+	}
+
+	/// <summary>
+	/// 템플릿 인자가 템플릿 타입(T)을 추론할 때 T가 레퍼런스가 아닌 일반적인 타입이라면 const를 무시함.
+	/// 그래서 cref, move 모두 lvalue로 추론됨.
+	/// </summary>
+	template<typename T>
+	void anywork1(T value) {
+		anywork2(value);
+	}
+	void case2() {
+		anyclass3 value;
+		const anyclass3 cvalue;
+		anywork2(value); //ref
+		anywork2(cvalue); //const ref
+		anywork2(anyclass3()); //move
+
+		cout << endl;
+
+		anywork1(value); //ref
+		anywork1(cvalue); //ref
+		anywork1(anyclass3()); //ref
+	}
+
+	template<typename T>
+	void anywork3(T& value) {
+		anywork2(value);
+	}
+	template<>
+	void anywork3(int& value) {
+
+	}
+	void case3() {
+		anyclass3 value;
+		const anyclass3 cvalue;
+
+		anywork3(value);
+		anywork3(cvalue);
+		
+		// 컴파일 에러 발생.
+		// anyclass3()는 rvalue이므로 참조로 전달할 수 없다. 아레의 경우와 같다.
+		//anywork3(anyclass3()); 
+		
+		int a = 1;
+		anywork3(a);
+		// rvalue이므로 참조로 전달할 수 없다.
+		// anywork3(1);
+	}
 
 	void main() {
-		case1();
+		//case1();
+		//case2();
+		case3();
 	}
 }
