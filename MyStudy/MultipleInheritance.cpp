@@ -24,7 +24,7 @@ public:
 void MultipleInheritanceMain()
 {
     bottom bot;
-    std::cout << bot.mid1::top::value << " 공통 상위 클래스 \n";
+    std::cout << static_cast<mid1&>(bot).mid1::top::value << " 공통 상위 클래스 \n";
     //protected이므로 외부에서 접근불가
     //std::cout << bot.mid2::top::value1 << " 공통 상위 클래스 \n";
     std::cout << (&bot)->mid1::value << " 중간 클래스 \n";
