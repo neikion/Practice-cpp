@@ -17,5 +17,14 @@ namespace TransferVariable {
 	/// </summary>
 	void case3();
 
+	/// <summary>
+	/// Universal reference(보편적 레퍼런스)
+	/// </summary>
+	void case4();
+
+	/// <summary>
+	/// forward구현
+	/// </summary>
+	void case5();
 }
 

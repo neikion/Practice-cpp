@@ -18,6 +18,8 @@ using namespace std;
 #include "MyStudy/MyFunctional.h"
 #include "MyStudy/MyConst.h"
 #include "MyStudy/MyTransferVariable.h"
+#include "MyStudy/Myint2type.h"
+
 int main()
 {
     /*test 1
@@ -79,9 +81,15 @@ int main()
     const
     */
     //MyConst::Main();
+    
     /* test12
     rvalue
     */
     TransferVariable::main();
+
+    /* test 13
+    int2type
+    */
+    //Myint2type::main();
     return 0;
 }

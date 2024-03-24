@@ -1,5 +1,7 @@
 #include"MyTransferVariable.h"
 #include <iostream>
+#include <string>
+#include <type_traits>
 namespace TransferVariable {
 	using namespace std;
 	class anyclass1 {
@@ -46,19 +48,16 @@ namespace TransferVariable {
 
 	}
 	
-	class anyclass3{
-	public:
-		int value;
-	};
+	class anyclass3{};
 
-	void anywork2(anyclass3& value) {
-		cout << "reference" << endl;
+	void checkValueRef(anyclass3& value) {
+		cout << "lvalue reference" << endl;
 	}
-	void anywork2(const anyclass3& value) {
+	void checkValueRef(const anyclass3& value) {
 		cout << "const reference" << endl;
 	}
-	void anywork2(anyclass3&& value) {
-		cout << "move" << endl;
+	void checkValueRef(anyclass3&& value) {
+		cout << "rvalue reference" << endl;
 	}
 
 	/// <summary>
@@ -67,14 +66,14 @@ namespace TransferVariable {
 	/// </summary>
 	template<typename T>
 	void anywork1(T value) {
-		anywork2(value);
+		checkValueRef(value);
 	}
 	void case2() {
 		anyclass3 value;
 		const anyclass3 cvalue;
-		anywork2(value); //ref
-		anywork2(cvalue); //const ref
-		anywork2(anyclass3()); //move
+		checkValueRef(value); //ref
+		checkValueRef(cvalue); //const ref
+		checkValueRef(anyclass3()); //move
 
 		cout << endl;
 
@@ -84,33 +83,77 @@ namespace TransferVariable {
 	}
 
 	template<typename T>
-	void anywork3(T& value) {
-		anywork2(value);
+	void anywork2(T& value) {
+		checkValueRef(value);
 	}
 	template<>
-	void anywork3(int& value) {
+	void anywork2(int& value) {
 
 	}
 	void case3() {
 		anyclass3 value;
 		const anyclass3 cvalue;
 
-		anywork3(value);
-		anywork3(cvalue);
+		anywork2(value);
+		anywork2(cvalue);
 		
 		// 컴파일 에러 발생.
 		// anyclass3()는 rvalue이므로 참조로 전달할 수 없다. 아레의 경우와 같다.
 		//anywork3(anyclass3()); 
 		
 		int a = 1;
-		anywork3(a);
+		anywork2(a);
 		// rvalue이므로 참조로 전달할 수 없다.
 		// anywork3(1);
+	}
+
+	/// <summary>
+	/// T&&는 rvalue가 아니라 보편적 레퍼런스의 표시다.
+	/// </summary>
+	template<typename T>
+	void anywork3(T&& value) {
+		checkValueRef(forward<T>(value));
+	}
+
+	void case4() {
+		anyclass3 value;
+		anywork3(move(value));
+		anywork3(value);
+	}
+
+
+	/// <summary>
+	/// forward lvalue to lvalue
+	/// </summary>
+	template<typename t>
+	t&& anywork5(typename remove_reference<t>::type& value) {
+		return static_cast<t&&>(value);
+	}
+
+	/// <summary>
+	/// forward rvalue to rvalue
+	/// </summary>
+	template<typename t>
+	t&& anywork5(typename remove_reference<t>::type&& value) {
+		return static_cast<t&&>(value);
+	}
+
+
+	template<typename t>
+	void anywork6(t&& value) {
+		checkValueRef(anywork5<t>(value));
+	}
+	void case5() {
+		anyclass3 value;
+		anywork6(value);
+		anywork6(move(value));
 	}
 
 	void main() {
 		//case1();
 		//case2();
-		case3();
+		//case3();
+		//case4();
+		case5();
 	}
 }
