@@ -524,20 +524,18 @@ namespace MyThead {
 
 		//read invoke_result_t
 		template<typename T,typename... args>
-		future<typename invoke_result<T, args...>::type> push(T work, args... value) {
+		future<typename invoke_result<T, args...>::type> push(T&& work, args&&... value) {
 			if (shutdown) {
 				throw exception("already shutdown");
 			}
 			
 			using ReturnType = typename invoke_result<T, args...>::type;
-			//packaged_task<ReturnType()> works(bind(work,value...));
-			packaged_task<ReturnType()>* some = new packaged_task<ReturnType()>(bind(work,value...));
+			shared_ptr<packaged_task<ReturnType()>> some = make_shared<packaged_task<ReturnType()>>(bind(forward<T>(work), forward<args>(value)...));
 			future<ReturnType> result = some->get_future();
 			{
 				lock_guard<mutex> lg(checkJobs);
-				jobs.push([some]() {(*some)(); delete some; });
+				jobs.push([some]() { (*some)(); });
 			}
-			some = NULL;
 			cv.notify_one();
 			return result;
 		}
@@ -593,12 +591,14 @@ namespace MyThead {
 		this_thread::sleep_for(chrono::seconds(3));
 		return i;
 	}
-	
+
 	void case16() {
 		tpool mypool;
 		auto test=mypool.push(static_cast<int(*)(int)>(anywork9), 1);
 		test.wait();
 		cout << test.get() << endl;
 	}
+
+
 
 }
