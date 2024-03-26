@@ -31,7 +31,8 @@ namespace MyThead {
 		//case13();
 		//case14();
 		//case15();
-		case16();
+		//case16();
+		case17();
 	}
 	void anywork1(int& result, mutex& m) {
 		bool lockflag = false;
@@ -484,6 +485,22 @@ namespace MyThead {
 		cout <<"1부터 1000까지 합 : " << parallelSum(ilist) << endl;
 
 	}
+
+	template<typename t>
+	t&& Mforward(typename remove_reference<t>::type& value) {
+		cout << typeid(t).name() << endl;
+		return static_cast<t&&>(value);
+	}
+
+	template<typename t>
+	t&& Mforward(typename remove_reference<t>::type&& value) {
+		cout << typeid(t).name() << endl;
+		return static_cast<t&&>(value);
+	}
+	template<typename t,typename...args>
+	typename invoke_result_t<t,args...> mybind(t&& ty, args&&... values) {
+		return forward<t>(ty)(forward<args>(values)...);
+	}
 	class tpool {
 	private:
 		size_t limit;
@@ -528,13 +545,15 @@ namespace MyThead {
 			if (shutdown) {
 				throw exception("already shutdown");
 			}
-			
 			using ReturnType = typename invoke_result<T, args...>::type;
-			shared_ptr<packaged_task<ReturnType()>> some = make_shared<packaged_task<ReturnType()>>(bind(forward<T>(work), forward<args>(value)...));
+			packaged_task<ReturnType()>* some
+				= new packaged_task<ReturnType()>(
+					bind(forward<T>(work),forward<args>(value)...)
+			);
 			future<ReturnType> result = some->get_future();
 			{
 				lock_guard<mutex> lg(checkJobs);
-				jobs.push([some]() { (*some)(); });
+				jobs.push([some]() { (*some)(); delete some; });
 			}
 			cv.notify_one();
 			return result;
@@ -599,6 +618,75 @@ namespace MyThead {
 		cout << test.get() << endl;
 	}
 
+	class anyclass2 {
+	public:
+		int svalue;
+		anyclass2() :svalue(0) {}
+		anyclass2(int invalue) : svalue(invalue) {}
+	};
+	class anyclass3 {
+	public:
+		anyclass2 value;
+		anyclass3() : value(anyclass2()) {
+			cout << "default cons" << endl;
+		};
+		anyclass3(int invalue) : value(anyclass2(invalue)) {
+		};
+		anyclass3(const anyclass3& ac) :value(anyclass2(ac.value.svalue)) {
+			cout << "lvalue cons" << endl;
+		}
+		anyclass3(anyclass3&& ac) noexcept {
+			value = ac.value;
+			ac.value = NULL;
+			cout << "rvalue cons" << endl;
+		};
+		anyclass3& operator=(const anyclass3& ac) {
+			value = anyclass2(ac.value.svalue);
+			cout << "copy =" << endl;
+			return *this;
+		}
+		anyclass3& operator=(anyclass3&& ac) noexcept {
+			value = ac.value;
+			ac.value = NULL;
+			cout << "move =" << endl;
+			return *this;
+		}
+	};
+	//tpool test case 1;
+	anyclass3 anywork10(anyclass3&& invalue) {
+		invalue.value.svalue++;
+		return invalue;
+	}
+
+	void case17() {
+		anyclass3 ac3(1),ac4;
+		// future의 경우 값으로 결과 값을 move로 이동시킬 수 있다면 move로 이동시킨다.
+		// move가 안될 경우 copy
+		promise<anyclass3> p;
+		future<anyclass3> f = p.get_future();
+		p.set_value(anywork10(move(ac3)));
+		ac4 = f.get();
+		cout << ac4.value.svalue << endl;
+
+		//tpool mypool;
+		/*anyclass3 result = anywork10(move(ac3));
+		cout << result.value.svalue<<endl;*/
+		//auto test = mypool.push(static_cast<int(*)(int)>(anywork9), 1);
+		//test.wait();
+		//cout << test.get() << endl;
+		//future<anyclass3&&> test = mypool.push(anywork10, move(ac3));
+
+
+		
+
+
+		/*test.wait();
+		anyclass3 result = test.get();
+		cout << result.value.value << endl;*/
+
+		//ac4 = anywork10(move(ac3));
+		cout << ac4.value.svalue << endl;
+	}
 
 
 }

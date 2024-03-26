@@ -81,5 +81,10 @@ namespace MyThead {
 	/// thred pool
 	/// </summary>
 	void case16();
+
+	/// <summary>
+	/// thread pool test
+	/// </summary>
+	void case17();
 }
 
