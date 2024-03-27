@@ -83,8 +83,15 @@ namespace MyThead {
 	void case16();
 
 	/// <summary>
-	/// thread pool test
+	/// promise - future rvalue reference test
 	/// </summary>
 	void case17();
+
+
+	/// <summary>
+	/// thread pool rvalue reference function paramater error
+	/// </summary>
+	void case18();
+
 }
 

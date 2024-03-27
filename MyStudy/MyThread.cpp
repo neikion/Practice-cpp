@@ -1,7 +1,8 @@
+#include<vector>
 #include<mutex>
 #include<iostream>
 #include<thread>
-#include<vector>
+
 #include"MyThread.h"
 #include<atomic>
 #include <queue>
@@ -12,6 +13,7 @@
 #include <typeinfo>
 #include <future>
 #include <memory>
+#include <type_traits>
 namespace MyThead {
 	using namespace std;
 
@@ -32,7 +34,8 @@ namespace MyThead {
 		//case14();
 		//case15();
 		//case16();
-		case17();
+		//case17();
+		case18();
 	}
 	void anywork1(int& result, mutex& m) {
 		bool lockflag = false;
@@ -558,19 +561,6 @@ namespace MyThead {
 			cv.notify_one();
 			return result;
 		}
-		template<typename T>
-		void push(T work) {
-			if (shutdown) {
-				throw exception("already shutdown");
-			}
-			{
-				lock_guard<mutex> lg(checkJobs);
-				jobs.push(
-					[work]() {work(); }
-				);
-			}
-			cv.notify_one();
-		}
 
 		~tpool() {
 			shutdown = true;
@@ -667,25 +657,23 @@ namespace MyThead {
 		p.set_value(anywork10(move(ac3)));
 		ac4 = f.get();
 		cout << ac4.value.svalue << endl;
+	}
 
+	void case18() {
+		//function<anyclass3(anyclass3)>은 된다.
+		//function<anyclass3(anyclass3&&)>은 안된다.
+		anyclass3 a(1);
+		function<anyclass3(anyclass3)> func = [](anyclass3 value) -> anyclass3 {value.value.svalue++; return value; };
+		packaged_task<anyclass3(void)> work(bind(anywork10,ref(a)));
+		future<anyclass3> f = work.get_future();
+		thread t(move(work));
+		t.join();
+		cout << f.get().value.svalue << endl;
+		//anyclass3 ac3(1), ac4;
 		//tpool mypool;
-		/*anyclass3 result = anywork10(move(ac3));
-		cout << result.value.svalue<<endl;*/
-		//auto test = mypool.push(static_cast<int(*)(int)>(anywork9), 1);
-		//test.wait();
-		//cout << test.get() << endl;
-		//future<anyclass3&&> test = mypool.push(anywork10, move(ac3));
-
-
-		
-
-
-		/*test.wait();
-		anyclass3 result = test.get();
-		cout << result.value.value << endl;*/
-
-		//ac4 = anywork10(move(ac3));
-		cout << ac4.value.svalue << endl;
+		//future<anyclass3> test = mypool.push(anywork10,move(ac3));
+		//test.get();
+		//cout << test.get().value.svalue << endl;
 	}
 
 
