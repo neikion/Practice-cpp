@@ -70,7 +70,7 @@ int main()
     /* test 9
     쓰레드
     */
-    //MyThead::Main();
+    MyThead::Main();
 
     /* test 10
     함수 객체
@@ -85,7 +85,7 @@ int main()
     /* test12
     rvalue
     */
-    TransferVariable::main();
+    //TransferVariable::main();
 
     /* test 13
     int2type

@@ -35,7 +35,8 @@ namespace MyThead {
 		//case15();
 		//case16();
 		//case17();
-		case18();
+		//case18();
+		case19();
 	}
 	void anywork1(int& result, mutex& m) {
 		bool lockflag = false;
@@ -549,15 +550,18 @@ namespace MyThead {
 				throw exception("already shutdown");
 			}
 			using ReturnType = typename invoke_result<T, args...>::type;
-			packaged_task<ReturnType()>* some
-				= new packaged_task<ReturnType()>(
-					bind(forward<T>(work),forward<args>(value)...)
-			);
+			
+			shared_ptr<packaged_task<ReturnType()>> some
+				= make_shared<packaged_task<ReturnType()>>(
+					bind(forward<T>(work), forward<args>(value)...));
+
 			future<ReturnType> result = some->get_future();
+			
 			{
 				lock_guard<mutex> lg(checkJobs);
-				jobs.push([some]() { (*some)(); delete some; });
+				jobs.push([some]() { (*some)(); });
 			}
+
 			cv.notify_one();
 			return result;
 		}
@@ -642,12 +646,27 @@ namespace MyThead {
 			return *this;
 		}
 	};
-	//tpool test case 1;
-	anyclass3 anywork10(anyclass3&& invalue) {
-		invalue.value.svalue++;
+	/// <summary>
+	/// tpool test case 1;
+	/// rvalue reference
+	/// </summary>
+	anyclass3&& anywork10(anyclass3&& invalue) {
+		return move(invalue);
+	}
+	/// <summary>
+	/// tpool test case 2
+	/// lvalue reference
+	/// </summary>
+	anyclass3 anywork11(anyclass3& invalue) {
 		return invalue;
 	}
-
+	/// <summary>
+	/// tpool test case3
+	/// value copy
+	/// </summary>
+	anyclass3 anywork12(anyclass3 invalue) {
+		return invalue;
+	}
 	void case17() {
 		anyclass3 ac3(1),ac4;
 		// future의 경우 값으로 결과 값을 move로 이동시킬 수 있다면 move로 이동시킨다.
@@ -659,22 +678,111 @@ namespace MyThead {
 		cout << ac4.value.svalue << endl;
 	}
 
+	/* 
+	https://stackoverflow.com/questions/34877699/stdbind-and-rvalue-reference
+	bind가 대략 수행하는 작업
+	anywork10처럼 rvalue로 받는 함수로 실행하면 어디가 오류가 나는지 알 수 있다.
+	template <typename FuncT, typename ArgT>
+	auto mbind(FuncT&& func, ArgT&& arg)
+	{
+		return
+			[
+				f = std::forward<FuncT>(func),
+				a = std::forward<ArgT>(arg)
+			]() mutable { return f(a); };  // NB: a is an lvalue here
+	}
+	*/
 	void case18() {
-		//function<anyclass3(anyclass3)>은 된다.
-		//function<anyclass3(anyclass3&&)>은 안된다.
+		// rvalue의 경우 값을 전달 후 신경 쓸 필요가 없다는 생각에 rvalue를 구현하려고 함.
+		// 그러나 작은 값은 큰 영향을 미치지 못하고,
+		// 큰 값의 경우 힙에 할당하여 포인터를 전달하면 되는 것 아닐까라는 생각이듦
+
+		
+		//return시 한번 lvalue cons이 일어나고
+		//future에서 결과 값을 받을 때 순서대로 move = 와 rvalue cons이 일어난다.
+		/* 결과
+		default cons
+		lvalue cons
+		move =
+		rvalue cons
+		*/
 		anyclass3 a(1);
-		function<anyclass3(anyclass3)> func = [](anyclass3 value) -> anyclass3 {value.value.svalue++; return value; };
-		packaged_task<anyclass3(void)> work(bind(anywork10,ref(a)));
+		packaged_task<anyclass3()> work(bind(anywork11, ref(a)));
 		future<anyclass3> f = work.get_future();
 		thread t(move(work));
 		t.join();
-		cout << f.get().value.svalue << endl;
-		//anyclass3 ac3(1), ac4;
-		//tpool mypool;
-		//future<anyclass3> test = mypool.push(anywork10,move(ac3));
-		//test.get();
-		//cout << test.get().value.svalue << endl;
+		cout << f.get().value.svalue << endl<<endl;
+		
+		//아레와 비슷한 코드로 추정
+		anyclass3 AnyInputArgs(1),ResultInPromise;
+		ResultInPromise = anywork11(AnyInputArgs);
+		anyclass3 ResultInFuture = move(ResultInPromise);
+		
+		cout << endl << endl;
+		
+		
+		/* 결과
+		lvalue cons
+		default cons
+		rvalue cons
+		lvalue cons
+		rvalue cons
+		move =
+		rvalue cons
+		*/
+		
+		anyclass3 a2(1);
+		packaged_task<anyclass3()> work2(bind(anywork12, a2));
+		future<anyclass3> f2 = work2.get_future();
+		thread t2(move(work2));
+		t2.join();
+		cout << f2.get().value.svalue << endl<<endl;
+		
+		/*
+		추정.
+		ref가 없으므로 bind에서 파라미터의 복사가 일어남.
+		bind에서 재호출을 대비하기 위해 미리 생성해둔 내부 변수에 rvalue cons 할당이 일어남.
+		return시 lvalue cons, 할당을 위한 rvalue cons
+		결과 이동을 위한 move = 와 rvalue cons
+		*/
+		
+		anyclass3 AnyInputArgs2(1);
+		anyclass3 BindCopyArgs2 = AnyInputArgs2;
+		anyclass3 ResultInPromise2;
+		anyclass3 BindVariable2(move(BindCopyArgs2));
+		ResultInPromise2 = anywork12(BindVariable2);
+		anyclass3 ResultInFuture2 = move(ResultInPromise2);
+
+		cout << endl << endl;
+
+
+		//출처 : https://stackoverflow.com/questions/34877699/stdbind-and-rvalue-reference
+		//bind를 통해 rvalue를 받는 함수는 오류가 난다.
+		//bind 내부에서 재사용을 위해 변수를 캡쳐 후 재사용 하는데
+		//내부 변수는 move를 통해 ravalue로 할당은 했지만,
+		//내부 변수가 사용될 때는 rvalue를 따로 처리하지 않아
+		//lvalue로 사용된다.
+		//그래서 rvalue를 받는 함수를 넘겨주면
+		//lvalue가 입력되어 타입이 맞지 않아 오류가 난다.
+		anyclass3 a3(2);
+		auto bindwork = bind(anywork10, move(a3));
+		//bindwork(); // compile error. 삭제된 함수라는 오류가 나옴
 	}
 
+	void case19(){
+		tpool p;
+		anyclass3 ac1(1),ac2(2);
+		future<anyclass3> f1, f2;
+		
+		//reference
+		f1 = p.push(anywork11, ref(ac1));
+		f1.get();
+		
+		cout << endl << endl;
 
+		//value
+		f2 = p.push(anywork12, ac2);
+		f2.get();
+	}
+	
 }

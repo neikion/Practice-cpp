@@ -78,7 +78,7 @@ namespace MyThead {
 	void case15();
 
 	/// <summary>
-	/// thred pool
+	/// thred pool 1
 	/// </summary>
 	void case16();
 
@@ -87,11 +87,15 @@ namespace MyThead {
 	/// </summary>
 	void case17();
 
-
 	/// <summary>
-	/// thread pool rvalue reference function paramater error
+	/// thread pool(bind) rvalue reference function paramater error
 	/// </summary>
 	void case18();
+
+	/// <summary>
+	/// thread pool 2 about pass by reference and value
+	/// </summary>
+	void case19();
 
 }
 
